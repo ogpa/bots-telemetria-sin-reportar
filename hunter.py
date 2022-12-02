@@ -6,7 +6,7 @@ from shapely.geometry.polygon import Polygon
 import pandas as pd
 import numpy as np
 import os
-
+from asignar_region import asignar_region
 HUN_URL_LOGIN = "http://www.huntermonitoreoperu.com/GeoV3.3/LoginV3.aspx"
 HUN_URL_MAINHTML = "http://www.huntermonitoreoperu.com/GeoV3.3/Paginas/Main.html?r="
 HUN_URL_MAIN36 = "http://www.huntermonitoreoperu.com/GeoV3.3/Paginas/Main36.aspx"
@@ -196,6 +196,8 @@ def scan_hunter(hoy):
     del df["temp"]  # elimina columna temporal
     df["Taller Molina"] = df.apply(lambda x: POLY_TALLER_MOLINA.contains(
         Point(x["Latitud"], x["Longitud"])), axis=1)
+    df["Region"] = df.apply(lambda x: asignar_region(
+        x["Latitud"], x["Longitud"]), axis=1)
     # Le cambio el nombre para que sea igual que el de Comsatel
     df = df.rename(
         columns={df.columns[1]: "Fecha Ultima Localizacion", df.columns[4]: "Direccion"})

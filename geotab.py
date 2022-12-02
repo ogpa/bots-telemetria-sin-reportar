@@ -3,6 +3,7 @@ import pandas as pd
 from obtener_fecha_y_hora import obtener_fecha_y_hora
 from shapely.geometry import Point
 from shapely.geometry.polygon import Polygon
+from asignar_region import asignar_region
 POLY_TALLER_MOLINA = Polygon([(-12.071496, -76.955457), (-12.071008, -76.954843),
                               (-12.070704, -76.953837), (-12.072157, -76.953322), (-12.0726576, -76.954998)])
 
@@ -20,6 +21,7 @@ def scan_geotab(hoy):
     lista_placa = []
     lista_tallermonlina = []
     lista_proveedor = []
+    lista_region = []
     cant_dbs = len(dbs)
     for x in range(cant_dbs):
 
@@ -41,6 +43,8 @@ def scan_geotab(hoy):
             lista_proveedor.append("Geotab")
             lista_tallermonlina.append(POLY_TALLER_MOLINA.contains(
                 Point(s["latitude"], s["longitude"])))
+            r = asignar_region(s["latitude"], s["longitude"])
+            lista_region.append(r)
             multi_calls.append(
                 ["Get", dict(typeName="Device", search={"id": s["device"]["id"]})])
 
@@ -57,7 +61,8 @@ def scan_geotab(hoy):
         "Longitud": lista_longitud,
         "Deviceid": lista_deviceid,
         "Taller Molina": lista_tallermonlina,
-        "Proveedor": lista_proveedor
+        "Proveedor": lista_proveedor,
+        "Region": lista_region
     }
 
     geotab_df = pd.DataFrame(dict_datos)

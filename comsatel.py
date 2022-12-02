@@ -6,7 +6,7 @@ from shapely.geometry.polygon import Polygon
 import pandas as pd
 import numpy as np
 import os
-
+from asignar_region import asignar_region
 COM_URL_BASE_CLOCATOR = "http://clocatorplus.comsatel.com.pe"
 COM_URL_LOGIN = "http://clocatorplus.comsatel.com.pe/CL/faces/seguridad/login.xhtml"
 COM_URL_FOUND = "http://clocatorplus.comsatel.com.pe/CL/faces/seguridad/login.xhtml;jsessionid="
@@ -347,6 +347,8 @@ def scan_comsatel(hoy):
         df["Placa"].str[3:]  # Coloca guión a la placa
     df["Taller Molina"] = df.apply(lambda x: POLY_TALLER_MOLINA.contains(
         Point(x["Latitud"], x["Longitud"])), axis=1)
+    df["Region"] = df.apply(lambda x: asignar_region(
+        x["Latitud"], x["Longitud"]), axis=1)
     df["Fecha Ultima Localizacion"] = df["Fecha Ultima Localizacion"].astype(
         str)
     df["temp_fecha"] = df["Fecha Ultima Localizacion"].str.len()

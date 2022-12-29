@@ -1,6 +1,6 @@
-from comsatel import scan_comsatel
-from hunter import scan_hunter
-from geotab import scan_geotab
+from Comsatel.comsatel import scan_comsatel
+from Hunter.hunter import scan_hunter
+from Geotab.geotab import scan_geotab
 import pandas as pd
 from datetime import datetime, timezone, timedelta
 #UTC -5

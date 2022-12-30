@@ -1,4 +1,4 @@
-from funciones_comsatel.subir_s3 import subir_s3
+#from funciones_comsatel.subir_s3 import subir_s3
 from obtener_reporte_consolidado import obtener_reporte_consolidado
 from abrir_reportes import abrir_reportes
 from funciones_comsatel.extraer_datos_session import extraer_datos_session

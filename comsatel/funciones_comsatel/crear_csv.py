@@ -20,21 +20,21 @@ def convertir_placa(descripcion_vehiculo):
     return placa
 
 
-def convertir_dias_uso(horas_trabajo):
+def convertir_dias_uso(horas_movimiento):
 
-    if horas_trabajo == 0:
+    if horas_movimiento == 0:
         dias_uso = 0
-    elif horas_trabajo > 0:
+    elif horas_movimiento > 0:
         dias_uso = 1
     return dias_uso
 
 
-def convertir_porcentaje_ralenti(horas_trabajo, horas_ralenti):
+def convertir_porcentaje_ralenti(horas_movimiento, horas_ralenti):
 
     if horas_ralenti == 0:
         porcentaje_ralenti = 0
     else:
-        porcentaje_ralenti = horas_ralenti/(horas_trabajo + horas_ralenti)
+        porcentaje_ralenti = horas_ralenti/(horas_movimiento + horas_ralenti)
     return porcentaje_ralenti
 
 
@@ -64,11 +64,11 @@ def crear_csv(archivo_excel):
     # 1 8 12 16 23 pasan a ser 0, 1, etc
     # Cambiar nombre de columnas
     df = df.rename(
-        columns={df.columns[0]: "descripcion_vehiculo", df.columns[1]: "distancia", df.columns[2]: "horas_trabajo", df.columns[3]: "horas_ralenti", df.columns[4]: "velocidad_maxima"})
+        columns={df.columns[0]: "descripcion_vehiculo", df.columns[1]: "distancia", df.columns[2]: "horas_movimiento", df.columns[3]: "horas_ralenti", df.columns[4]: "velocidad_maxima"})
 
     df = df.reset_index(drop=True)
     df["distancia"] = df["distancia"].astype(float)
-    df["horas_trabajo"] = df["horas_trabajo"].astype(float)
+    df["horas_movimiento"] = df["horas_movimiento"].astype(float)
     df["horas_ralenti"] = df["horas_ralenti"].astype(float)
     df["velocidad_maxima"] = df["velocidad_maxima"].astype(int)
 
@@ -78,11 +78,11 @@ def crear_csv(archivo_excel):
 
     # Crear columna "dias_uso"
     df["dias_uso"] = df.apply(
-        lambda x: convertir_dias_uso(x["horas_trabajo"]), axis=1)
+        lambda x: convertir_dias_uso(x["horas_movimiento"]), axis=1)
 
     # Crear columna "porcentaje_ralenti"
     df["porcentaje_ralenti"] = df.apply(lambda x: convertir_porcentaje_ralenti(
-        x["horas_trabajo"], x["horas_ralenti"]), axis=1)
+        x["horas_movimiento"], x["horas_ralenti"]), axis=1)
     df["proveedor"] = "Comsatel"
     fecha_ayer = ayer()
     df["fecha"] = fecha_ayer[1]

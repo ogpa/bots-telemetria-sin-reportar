@@ -5,3 +5,4 @@
 *.pyc
 __pycache__/geotab.cpython-310.pyc
 __pycache__/hunter.cpython-310.pyc
+*.png

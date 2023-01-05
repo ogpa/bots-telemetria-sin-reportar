@@ -23,8 +23,8 @@ def extraer_texto(textomaster, ini_cabecera, fin_cabecera):
 
 chrome_options = Options()
 prefs = {"download.default_directory": os.getcwd()}
-chrome_options.add_argument('--headless')
-chrome_options.add_argument('--disable-gpu')
+# chrome_options.add_argument('--headless')
+# chrome_options.add_argument('--disable-gpu')
 chrome_options.add_argument(
     "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36")
 
@@ -42,9 +42,9 @@ password.send_keys("mbrenting2021")
 # driver.save_screenshot("completar_registro.png")
 driver.find_element(By.NAME, "submit").click()
 # driver.save_screenshot("submit.png")
-# boton_reportes = WebDriverWait(driver, 30).until(
-#     EC.element_to_be_clickable((By.XPATH, '//*[@id="hb_mi_reports_ctl"]/div/div')))
-# boton_reportes.click()
+boton_reportes = WebDriverWait(driver, 60).until(
+    EC.element_to_be_clickable((By.XPATH, '//*[@id="hb_mi_reports_ctl"]/div/div')))
+boton_reportes.click()
 
 boton_add_object = WebDriverWait(driver, 20).until(EC.element_to_be_clickable(
     (By.XPATH, '//*[@id="report_templates_filter_target"]/div/div[1]/div[2]/div[2]/div[2]/button')))
@@ -75,10 +75,13 @@ boton_yesterday.click()
 #     (By.XPATH, '//*[@id="dPanel-center"]')))
 # boton_panel.click()
 
-driver.save_screenshot("panel.png")
+# driver.save_screenshot("panel.png")
 
 
 time.sleep(5)
+# elemento_50 = WebDriverWait(driver, 20).until(EC.visibility_of_element_located(
+#    (By.XPATH, '//*[@id="report_templates_filter_time-yesterday-label"]')))
+
 # element_export = driver.find_element(
 #     By.CSS_SELECTOR, '//*[@id="report_result_export"]')
 # #driver.execute_script("$(arguments[0]).click();", element)
@@ -147,7 +150,9 @@ boton_yesterday = WebDriverWait(driver, 20).until(EC.element_to_be_clickable(
     (By.XPATH, '//*[@id="report_templates_filter_time-yesterday-label"]')))
 boton_yesterday.click()
 time.sleep(5)
-
+elemento_50 = EC.presence_of_element_located(
+    (By.XPATH, '//*[@id="report_result_toolbar_table"]/tbody/tr/td[7]'))
+WebDriverWait(driver, 20).until(elemento_50)
 all_cookies = driver.get_cookies()
 cookies_dict = {}
 for cookie in all_cookies:
@@ -160,7 +165,8 @@ a = extraer_texto(html_kilometraje_horas, '<img class="olTileImage" src="https:/
 sid_kilometraje_horas = a[-32:]
 print("sid Kilometraje Horas")
 print(sid_kilometraje_horas)
-url_Kilometraje_Horas = "https://hst-api.wialon.com/wialon/ajax.html?sid=" + sid + '&svc=report/export_result&params=%7B%22attachMap%22%3A1%2C%22extendBounds%22%3A0%2C%22compress%22%3A0%2C%22delimiter%22%3A%22semicolon%22%2C%22outputFileName%22%3A%22MB_Renting_%5BAntapaccay%5D_Horas_Trabajadas_MB_Renting_2022-12-29_16-09-30%22%2C%22pageOrientation%22%3A%22landscap%22%2C%22pageSize%22%3A%22a4%22%2C%22pageWidth%22%3A%220%22%2C%22format%22%3A8%7D'
+url_Kilometraje_Horas = "https://hst-api.wialon.com/wialon/ajax.html?sid=" + sid + \
+    '&svc=report/export_result&params=%7B%22attachMap%22%3A1%2C%22extendBounds%22%3A0%2C%22compress%22%3A0%2C%22delimiter%22%3A%22semicolon%22%2C%22outputFileName%22%3A%22MB_Renting_%5BAntapaccay%5D_Horas_Trabajadas_MB_Renting_2022-12-29_16-09-30%22%2C%22pageOrientation%22%3A%22landscap%22%2C%22pageSize%22%3A%22a4%22%2C%22pageWidth%22%3A%220%22%2C%22format%22%3A8%7D'
 payload_Kilometraje_Horas = {}
 headers_Kilometraje_Horas = {
     'authority': 'hst-api.wialon.com',

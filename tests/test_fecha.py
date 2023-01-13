@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 
-d = datetime.today() - timedelta(days=1)
+d = datetime.today() - timedelta(days=0)
 
 
 # dd/mm/YY

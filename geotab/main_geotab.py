@@ -1,10 +1,10 @@
 import mygeotab
 from datetime import datetime, timedelta
 import pandas as pd
-from horas_y_velocidad import horas_y_velocidad
-from distancia import distancia
+from geotab.horas_y_velocidad import horas_y_velocidad
+from geotab.distancia import distancia
 dbs = ["sanfernando", "bureauveritas",
-       "mitsuidelperu", "mibanco", "cofasa", "mb_renting"]
+       "mitsuidelperu", "mibanco", "cofasa", "mb_renting", "agricolachira"]
 #dbs = ["sanfernando", "mibanco"]
 USUARIO_BOT_GEOTAB = "bot-telemetria@mb-renting.com"
 CLAVE_BOT_GEOTAB = "FlotasMBRenting2k23$"
@@ -17,16 +17,28 @@ def ayer():
     return d_p, d_df
 
 
-def scan_geotab():
+def fecha(delta):
+    d = datetime.today() - timedelta(days=delta)
+    #fecha_yyyymmdd = d.strftime("%Y%m%d")
+    fecha_ddmmyyyy = d.strftime("%d/%m/%Y")
+    # return fecha_yyyymmdd, fecha_ddmmyyyy
+    return fecha_ddmmyyyy
 
-    lista_df_database = []
+
+def scan_geotab(hora_reporte):
+
     df_geotab_columnas = ["placa", "descripcion_vehiculo", "fecha", "proveedor", "database", "id", "horas_movimiento",
-                          "horas_ralenti", "velocidad_maxima", "dias_uso", "porcentaje_ralenti", "odometro_hoy", "odometro_ayer", "distancia"]
+                          "horas_ralenti", "velocidad_maxima", "dias_uso", "porcentaje_ralenti", "odometro_fin", "odometro_inicio", "distancia"]
 
     df_geotab = pd.DataFrame(columns=df_geotab_columnas)
-    fecha_ayer = ayer()
+
+    if hora_reporte == "Ayer":
+        fecha_payload = fecha(1)  # dd/mm/yyyy
+    elif hora_reporte == "Hoy":
+        fecha_payload = fecha(0)  # dd/mm/yyyy
+
     cant_dbs = len(dbs)
-    geotab_csv_filename = "geotab_productividad.csv"
+
     for x in range(cant_dbs):
         print(dbs[x])
         api = mygeotab.API(username=USUARIO_BOT_GEOTAB,
@@ -45,7 +57,7 @@ def scan_geotab():
 
         # Obtener aquí la lista de ids y placas
         for s in dsi:
-            lista_fecha.append(fecha_ayer[1])
+            lista_fecha.append(fecha_payload)
             lista_proveedor.append("Geotab")
             lista_database.append(dbs[x])
             # Obtengo todos los vehículos de esa BD y creo los multicall
@@ -68,8 +80,8 @@ def scan_geotab():
             "id": lista_id
         }
         df_datos_vehiculos = pd.DataFrame(dict_datos_vehiculos)
-        df_h_y_v = horas_y_velocidad(lista_id, credenciales)
-        df_distancia = distancia(lista_id, credenciales)
+        df_h_y_v = horas_y_velocidad(lista_id, credenciales, hora_reporte)
+        df_distancia = distancia(lista_id, credenciales, hora_reporte)
 
         df_temp_1 = pd.merge(df_datos_vehiculos, df_h_y_v, on="id", how="left")
         df_temp_1 = df_temp_1.fillna(0)
@@ -100,7 +112,8 @@ def scan_geotab():
     #     df_geotab = pd.merge(
     #         lista_df_database[y+1], lista_df_database[y], on="id")
 
-    df_geotab.to_csv(geotab_csv_filename, index=False)
+    #df_geotab.to_csv(geotab_csv_filename, index=False)
+    return df_geotab
 
 
-scan_geotab()
+# scan_geotab()

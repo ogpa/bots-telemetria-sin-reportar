@@ -86,10 +86,10 @@ def crear_csv(archivo_excel):
     df["proveedor"] = "Comsatel"
     fecha_ayer = ayer()
     df["fecha"] = fecha_ayer[1]
-    nombre_csv = "comsatel_productividad.csv"
-    df.to_csv(nombre_csv, index=False)
+    #nombre_csv = "comsatel_productividad.csv"
+    #df.to_csv(nombre_csv, index=False)
     # print(df)
-    # return x
+    return df
 
 
 # crear_csv(ruta_archivo_excel)

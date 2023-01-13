@@ -21,6 +21,12 @@ def extraer_texto(textomaster, ini_cabecera, fin_cabecera):
     return texto
 
 
+def fecha(delta):
+    d = datetime.today() - timedelta(days=delta)
+    fecha_ddmmyyyy = d.strftime("%d/%m/%Y")
+    return fecha_ddmmyyyy
+
+
 def convertir_placa(descripcion_vehiculo):
     c = "-"
     pos_guion = descripcion_vehiculo.find(c)
@@ -114,7 +120,7 @@ def csv_kilometraje_horas(archivo):
     return df
 
 
-def crear_csv(filename_horas_trabajadas, filename_kilometraje_horas):
+def crear_csv(filename_horas_trabajadas, filename_kilometraje_horas, hora_reporte):
     df_ht = csv_horas_trabajadas(filename_horas_trabajadas)
     df_kh = csv_kilometraje_horas(filename_kilometraje_horas)
     # return x
@@ -123,13 +129,19 @@ def crear_csv(filename_horas_trabajadas, filename_kilometraje_horas):
 
     df_goldcar = df_goldcar.rename(
         columns={df_goldcar.columns[0]: "descripcion_vehiculo"})
-    fecha_ayer = ayer()
-    df_goldcar["fecha"] = fecha_ayer[1]
+
+    if hora_reporte == "Ayer":
+        fecha_payload = fecha(1)  # dd/mm/yyyy
+    elif hora_reporte == "Hoy":
+        fecha_payload = fecha(0)  # dd/mm/yyyy
+
+    df_goldcar["fecha"] = fecha_payload
     df_goldcar["proveedor"] = "Goldcar"
     df_goldcar = df_goldcar.drop("descripcion_vehiculo_y", axis=1)
     # print(df_goldcar)
-    filename_csv_goldcar = "goldcar_productividad.csv"
-    df_goldcar.to_csv(filename_csv_goldcar, index=False)
+    #filename_csv_goldcar = "goldcar_productividad.csv"
+    #df_goldcar.to_csv(filename_csv_goldcar, index=False)
+    return df_goldcar
 
 
-crear_csv(filename_horas_trabajadas, filename_kilometraje_horas)
+#crear_csv(filename_horas_trabajadas, filename_kilometraje_horas)

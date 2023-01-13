@@ -1,7 +1,7 @@
 import requests
 import urllib
 from datetime import datetime, timedelta
-from funciones_comsatel.extraer_datos_session import extraer_datos_session
+from comsatel.funciones_comsatel.extraer_datos_session import extraer_datos_session
 COM_URL_CLREPORTE = "http://clreportes.comsatel.com.pe/CLReporte/"
 CABECERA_SESSION = 'JSESSIONID='
 CABECERA_COOKIE_BARRACUDA = 'BNI_BARRACUDA_LB_COOKIE='
@@ -9,14 +9,13 @@ COM_URL_CONSOLIDADO = "http://clreportes.comsatel.com.pe/CLReporte/faces/page/co
 COM_URL_BASE_CLREPORTES = "http://clreportes.comsatel.com.pe"
 
 
-def ayer():
-    d = datetime.today() - timedelta(days=1)
-    d_p = d.strftime("%Y%m%d")
-    d_df = d.strftime("%d/%m/%Y")
-    return d_p, d_df
+def fecha(delta):
+    d = datetime.today() - timedelta(days=delta)
+    fecha_ddmmyyyy = d.strftime("%d/%m/%Y")
+    return fecha_ddmmyyyy
 
 
-def obtener_reporte_consolidado(a):  # Datos de abrir_reportes
+def obtener_reporte_consolidado(a, hora_reporte):  # Datos de abrir_reportes
     # 0 -> s_CLReporte
     # 1 -> c_b_CLReporte
     # 2 -> vs_CLReporte
@@ -80,10 +79,14 @@ def obtener_reporte_consolidado(a):  # Datos de abrir_reportes
 
     # 0: payload yyyymmdd
     # 1: dataframe dd/mm/yyyy
-    fecha_ayer = ayer()  # dd/mm/yyyy
-    print(urllib.parse.quote(fecha_ayer[1], safe=""))
-    payload_Found_Click_Buscar = 'j_idt45%3AfrmBusquedaAvanzada=j_idt45%3AfrmBusquedaAvanzada&j_idt45%3AtxtFechaInicioA_input=' + urllib.parse.quote("25/12/2022", safe="") + '&j_idt45%3AtxtFechaFinA_input=' + urllib.parse.quote(
-        "25/12/2022", safe="") + '&j_idt45%3AtxtPlacaA=&j_idt45%3AtxtCodigoExternoA=&j_idt45%3AcboCompania=0&j_idt45%3AtxtNroMotorA=&j_idt45%3AcboFlota=0&j_idt45%3AcboSubFlota=0&javax.faces.ViewState=' + urllib.parse.quote(vs_Ventana_Reporte, safe="") + '&j_idt45%3AfrmBusquedaAvanzada%3AbtnBuscar=j_idt45%3AfrmBusquedaAvanzada%3AbtnBuscar'
+    if hora_reporte == "Ayer":
+        fecha_payload = fecha(1)  # dd/mm/yyyy
+    elif hora_reporte == "Hoy":
+        fecha_payload = fecha(0)  # dd/mm/yyyy
+
+    #print(urllib.parse.quote(fecha_ayer[1], safe=""))
+    payload_Found_Click_Buscar = 'j_idt45%3AfrmBusquedaAvanzada=j_idt45%3AfrmBusquedaAvanzada&j_idt45%3AtxtFechaInicioA_input=' + urllib.parse.quote(fecha_payload, safe="") + '&j_idt45%3AtxtFechaFinA_input=' + urllib.parse.quote(
+        fecha_payload, safe="") + '&j_idt45%3AtxtPlacaA=&j_idt45%3AtxtCodigoExternoA=&j_idt45%3AcboCompania=0&j_idt45%3AtxtNroMotorA=&j_idt45%3AcboFlota=0&j_idt45%3AcboSubFlota=0&javax.faces.ViewState=' + urllib.parse.quote(vs_Ventana_Reporte, safe="") + '&j_idt45%3AfrmBusquedaAvanzada%3AbtnBuscar=j_idt45%3AfrmBusquedaAvanzada%3AbtnBuscar'
     headers_Found_Click_Buscar = {
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
         'Accept-Language': 'en-US,en;q=0.9,es;q=0.8,it;q=0.7',
@@ -157,8 +160,7 @@ def obtener_reporte_consolidado(a):  # Datos de abrir_reportes
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36'
     }
 
-    fecha_nombrearchivo = datetime.today().strftime("%d%m%Y")
-    nombreArchivo_Comsatel_local = fecha_nombrearchivo + "_Consolidado_Comsatel.xlsx"
+    nombreArchivo_Comsatel_local = hora_reporte + "_Consolidado_Comsatel.xlsx"
 
     response_DescargaExcel = requests.request(
         "POST", COM_URL_CONSOLIDADO, headers=headers_DescargarExcel, data=payload_DescargarExcel)

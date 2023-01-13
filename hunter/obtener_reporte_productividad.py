@@ -20,6 +20,15 @@ def juntar_codigos_placas(lista_codigos_placas):
     string_lista_codigos = string_lista_codigos[:-3]
     return string_lista_codigos
 
+# payload yyyymmdd
+
+
+def fecha(delta):
+    d = datetime.today() - timedelta(days=delta)
+    fecha_yyyymmdd = d.strftime("%Y%m%d")
+    fecha_ddmmyyyy = d.strftime("%d/%m/%Y")
+    return fecha_yyyymmdd, fecha_ddmmyyyy
+
 
 def ayer():
     d = datetime.today() - timedelta(days=1)
@@ -123,19 +132,19 @@ def crear_csv_productividad(respuesta, fecha):
                           "descripcion_vehiculo": lista_descripcion_vehiculo,
                           "fecha": lista_fecha,
                           "tipo_reporte": lista_tipo_reporte,
-                          "dias_usados": lista_dias_usados,
-                          "duracion": lista_duracion,
+                          "dias_uso": lista_dias_usados,
+                          "horas_movimiento": lista_duracion,
                           "distancia": lista_distancia,
                           "velocidad_maxima": lista_velocidad_maxima,
-                          "duracion_ralenti": lista_duracion_ralenti,
+                          "horas_ralenti": lista_duracion_ralenti,
                           "porcentaje_ralenti": lista_porcentaje_ralenti}
     productividad_df = pd.DataFrame(dict_productividad)
-    productividad_df_filename = "hunter_productividad.csv"
-    productividad_df.to_csv(productividad_df_filename, index=False)
-    return productividad_df_filename
+    #productividad_df_filename = "hunter_productividad.csv"
+    #productividad_df.to_csv(productividad_df_filename, index=False)
+    return productividad_df
 
 
-def obtener_reporte_productividad(c):
+def obtener_reporte_productividad(c, hora_reporte):
 
     payload_Panel = {}
     headers_Panel = {
@@ -198,10 +207,14 @@ def obtener_reporte_productividad(c):
 
     # 0: payload yyyymmdd
     # 1: dataframe dd/mm/yyyy
-    fecha_ayer = ayer()
+    #fecha_payload = fecha(hora_reporte)
+    if hora_reporte == "Ayer":
+        fecha_payload = fecha(1)  # dd/mm/yyyy
+    elif hora_reporte == "Hoy":
+        fecha_payload = fecha(0)  # dd/mm/yyyy
     string_codigos_placas_payload = juntar_codigos_placas(c)
     payload_Reporteproductividad = 'u=93084&v='+string_codigos_placas_payload + \
-        '&i=' + fecha_ayer[0] + '&f=' + fecha_ayer[0] + '&vv=&cl='+CLAVE + \
+        '&i=' + fecha_payload[0] + '&f=' + fecha_payload[0] + '&vv=&cl='+CLAVE + \
         '&ts=RNT&e='+USUARIO+'**EG*01&version=undefined'
     headers_Reporteproductividad = {
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
@@ -218,6 +231,6 @@ def obtener_reporte_productividad(c):
     response_Reporteproductividad = requests.request(
         "POST", HUN_URL_PRODUCTIVIDAD, headers=headers_Reporteproductividad, data=payload_Reporteproductividad)
 
-    nombre_archivo = crear_csv_productividad(
-        response_Reporteproductividad.text, fecha_ayer[1])
-    return nombre_archivo
+    df = crear_csv_productividad(
+        response_Reporteproductividad.text, fecha_payload[1])
+    return df

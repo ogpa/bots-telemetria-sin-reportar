@@ -1,10 +1,9 @@
 import mygeotab
-from test_tz_now import ahora
-from fechas_ayer_hoy import fechas_ayer_hoy
+from geotab.fechas_ayer_hoy import fechas_ayer_hoy
 import pandas as pd
 
 
-def horas_y_velocidad(lista_id, credenciales):
+def horas_y_velocidad(lista_id, credenciales, hora_reporte):
     username = credenciales.username
     # print(username)
     database = credenciales.database
@@ -15,15 +14,15 @@ def horas_y_velocidad(lista_id, credenciales):
     # print(session_id)
     multi_calls = []
     multi_calls.clear()
-    fechas = fechas_ayer_hoy()
-    ayer = fechas[0]  # "2023-01-03T05:00:00.000Z"
-    hoy = fechas[1]  # "2023-01-04T04:59:59.000Z"
+    fechas = fechas_ayer_hoy(hora_reporte)
+    inicio = fechas[0]  # "2023-01-03T05:00:00.000Z" ayer
+    fin = fechas[1]  # "2023-01-04T04:59:59.000Z" hoy
     # print(ayer)
     # print(hoy)
     for s in lista_id:
         # Obtengo todos los vehículos de esa BD y creo los multicall
         multi_calls.append(
-            ["Get", dict(typeName="Trip", search={"fromDate": ayer, "toDate": hoy, "deviceSearch": {"id": s}})])
+            ["Get", dict(typeName="Trip", search={"fromDate": inicio, "toDate": fin, "deviceSearch": {"id": s}})])
 
     api = mygeotab.API(username=username, database=database,
                        server=server, session_id=session_id)

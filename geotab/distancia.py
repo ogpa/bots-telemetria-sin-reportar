@@ -1,12 +1,11 @@
 import mygeotab
-from test_tz_now import ahora
-from fechas_ayer_hoy import fechas_ayer_hoy
+from geotab.fechas_ayer_hoy import fechas_ayer_hoy
 import pandas as pd
 
 ODOMETRO_METROS_A_KILOMETROS = 1000
 
 
-def distancia(lista_id, credenciales):
+def distancia(lista_id, credenciales, hora_reporte):
     username = credenciales.username
     # print(username)
     database = credenciales.database
@@ -15,71 +14,71 @@ def distancia(lista_id, credenciales):
     # print(server)
     session_id = credenciales.session_id
     # print(session_id)
-    multi_calls_hoy = []
-    multi_calls_ayer = []
-    multi_calls_hoy.clear()
-    multi_calls_ayer.clear()
-    fechas = fechas_ayer_hoy()
-    ayer = fechas[0]  # "2023-01-03T05:00:00.000Z"
-    hoy = fechas[1]  # "2023-01-04T04:59:59.000Z"
+    multi_calls_fin = []
+    multi_calls_inicio = []
+    multi_calls_fin.clear()
+    multi_calls_inicio.clear()
+    fechas = fechas_ayer_hoy(hora_reporte)
+    inicio = fechas[0]  # "2023-01-03T05:00:00.000Z"
+    fin = fechas[1]  # "2023-01-04T04:59:59.000Z"
     # print(ayer)
     # print(hoy)
     for s in lista_id:
         # Obtengo todos los vehículos de esa BD y creo los multicall
         # print(s)
-        multi_calls_hoy.append(
-            ["Get", dict(typeName="StatusData", search={"fromDate": hoy, "toDate": hoy, "deviceSearch": {"id": s}, "diagnosticSearch": {"id": "DiagnosticRawOdometerId"}})])
-        multi_calls_ayer.append(
-            ["Get", dict(typeName="StatusData", search={"fromDate": ayer, "toDate": ayer, "deviceSearch": {"id": s}, "diagnosticSearch": {"id": "DiagnosticRawOdometerId"}})])
+        multi_calls_fin.append(
+            ["Get", dict(typeName="StatusData", search={"fromDate": fin, "toDate": fin, "deviceSearch": {"id": s}, "diagnosticSearch": {"id": "DiagnosticRawOdometerId"}})])
+        multi_calls_inicio.append(
+            ["Get", dict(typeName="StatusData", search={"fromDate": inicio, "toDate": inicio, "deviceSearch": {"id": s}, "diagnosticSearch": {"id": "DiagnosticRawOdometerId"}})])
 
     api = mygeotab.API(username=username, database=database,
                        server=server, session_id=session_id)
-    r_statusdata_multi_hoy = api.multi_call(multi_calls_hoy)
-    r_statusdata_multi_ayer = api.multi_call(multi_calls_ayer)
+    r_statusdata_multi_fin = api.multi_call(multi_calls_fin)
+    r_statusdata_multi_inicio = api.multi_call(multi_calls_inicio)
 
-    lista_odometro_hoy = []
-    lista_odometro_ayer = []
+    lista_odometro_fin = []
+    lista_odometro_inicio = []
 
     lista_id_temp = []
-    # print(r_statusdata_multi_hoy)
-    # print(r_statusdata_multi_ayer)
-    for status_hoy in r_statusdata_multi_hoy:
+    # print(r_statusdata_multi_fin)
+    # print(r_statusdata_multi_inicio)
+    for status_fin in r_statusdata_multi_fin:
 
-        if len(status_hoy) > 0:
-            id = status_hoy[0]["device"]["id"]
+        if len(status_fin) > 0:
+            id = status_fin[0]["device"]["id"]
             lista_id_temp.append(id)
-            odometro_hoy = status_hoy[0]["data"]
-            lista_odometro_hoy.append(
-                odometro_hoy / ODOMETRO_METROS_A_KILOMETROS)
+            odometro_fin = status_fin[0]["data"]
+            lista_odometro_fin.append(
+                odometro_fin / ODOMETRO_METROS_A_KILOMETROS)
 
-    dict_status_hoy = {
+    dict_status_fin = {
         "id": lista_id_temp,
-        "odometro_hoy": lista_odometro_hoy
+        "odometro_fin": lista_odometro_fin
     }
 
-    df_status_hoy = pd.DataFrame(dict_status_hoy)
+    df_status_fin = pd.DataFrame(dict_status_fin)
 
     lista_id_temp = []
     lista_id_temp.clear()
 
-    for status_ayer in r_statusdata_multi_ayer:
+    for status_inicio in r_statusdata_multi_inicio:
 
-        if len(status_ayer) > 0:
-            id = status_ayer[0]["device"]["id"]
+        if len(status_inicio) > 0:
+            id = status_inicio[0]["device"]["id"]
             lista_id_temp.append(id)
-            odometro_ayer = status_ayer[0]["data"]
-            lista_odometro_ayer.append(
-                odometro_ayer / ODOMETRO_METROS_A_KILOMETROS)
+            odometro_inicio = status_inicio[0]["data"]
+            lista_odometro_inicio.append(
+                odometro_inicio / ODOMETRO_METROS_A_KILOMETROS)
 
-    dict_status_ayer = {
+    dict_status_inicio = {
         "id": lista_id_temp,
-        "odometro_ayer": lista_odometro_ayer
+        "odometro_inicio": lista_odometro_inicio
     }
 
-    df_status_ayer = pd.DataFrame(dict_status_ayer)
+    df_status_inicio = pd.DataFrame(dict_status_inicio)
 
-    df_status = pd.merge(df_status_hoy, df_status_ayer, on="id")
+    df_status = pd.merge(df_status_fin, df_status_inicio, on="id")
     df_status["distancia"] = df_status.apply(
-        lambda x: x["odometro_hoy"]-x["odometro_ayer"], axis=1)
+        lambda x: x["odometro_fin"]-x["odometro_inicio"], axis=1)
 
     return df_status

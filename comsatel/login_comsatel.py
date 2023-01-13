@@ -1,6 +1,6 @@
 import requests
 import urllib
-from funciones_comsatel.extraer_datos_session import extraer_datos_session
+from comsatel.funciones_comsatel.extraer_datos_session import extraer_datos_session
 COM_URL_BASE_CLOCATOR = "http://clocatorplus.comsatel.com.pe"
 COM_URL_LOGIN = "http://clocatorplus.comsatel.com.pe/CL/faces/seguridad/login.xhtml"
 COM_URL_FOUND = "http://clocatorplus.comsatel.com.pe/CL/faces/seguridad/login.xhtml;jsessionid="

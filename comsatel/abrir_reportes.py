@@ -1,6 +1,6 @@
 import requests
 import urllib
-from funciones_comsatel.extraer_datos_session import extraer_datos_session
+from comsatel.funciones_comsatel.extraer_datos_session import extraer_datos_session
 CABECERA_SESSION = 'JSESSIONID='
 CABECERA_COOKIE_BARRACUDA = 'BNI_BARRACUDA_LB_COOKIE='
 COM_URL_BASE_CLOCATOR = "http://clocatorplus.comsatel.com.pe"

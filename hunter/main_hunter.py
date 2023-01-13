@@ -4,7 +4,7 @@ from hunter.extraer_codigos_placas import extraer_codigos_placas
 
 
 def scan_hunter(hora_reporte):
-
+    
     l = login_hunter()
     c = extraer_codigos_placas(l)
     df = obtener_reporte_productividad(c, hora_reporte)

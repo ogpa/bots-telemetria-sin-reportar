@@ -10,6 +10,7 @@ from selenium.webdriver.chrome.options import Options
 import os
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium_goldcar.obtener_reporte import crear_csv
+
 GOLD_URL_LOGIN = "http://gpsenperu.gpsgoldcar.com/"
 
 
@@ -204,6 +205,9 @@ def scan_goldcar(hora_reporte):
 
     df = crear_csv("Horas_Trabajadas.xlsx",
                    "Kilometraje_Horas.xlsx", hora_reporte)
+    
+    
+
     return df
     # boton_panel = WebDriverWait(driver, 20).until(EC.element_to_be_clickable(
     #     (By.XPATH, '//*[@id="dPanel-center"]')))

@@ -3,6 +3,8 @@ from datetime import datetime, timedelta
 import pandas as pd
 from geotab.horas_y_velocidad import horas_y_velocidad
 from geotab.distancia import distancia
+
+
 dbs = ["sanfernando", "bureauveritas",
        "mitsuidelperu", "mibanco", "cofasa", "mb_renting", "agricolachira"]
 #dbs = ["sanfernando", "mibanco"]
@@ -26,7 +28,7 @@ def fecha(delta):
 
 
 def scan_geotab(hora_reporte):
-
+    
     df_geotab_columnas = ["placa", "descripcion_vehiculo", "fecha", "proveedor", "database", "id", "horas_movimiento",
                           "horas_ralenti", "velocidad_maxima", "dias_uso", "porcentaje_ralenti", "odometro_fin", "odometro_inicio", "distancia"]
 

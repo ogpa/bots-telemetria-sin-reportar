@@ -4,8 +4,8 @@ from comsatel.funciones_comsatel.extraer_datos_session import extraer_datos_sess
 from comsatel.login_comsatel import login_comsatel
 from comsatel.funciones_comsatel.crear_csv import crear_csv
 
-
 def scan_comsatel(hora_reporte):
+    
     l = login_comsatel()
     d_l = extraer_datos_session(l[0])  # l[0] es la respuesta
 
@@ -18,4 +18,5 @@ def scan_comsatel(hora_reporte):
     c = obtener_reporte_consolidado(a, hora_reporte)
     df = crear_csv(c)
     # subir_s3(c)  # Ruta de archivo
+    
     return df

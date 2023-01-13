@@ -72,8 +72,11 @@ def horas_y_velocidad(lista_id, credenciales, hora_reporte):
             lista_horas_ralenti.append(suma_ralenti)
             lista_velocidad_maxima.append(actual_maxima)
 
-            porcentaje_ralenti = (
-                suma_ralenti/(suma_ralenti + suma_movimiento))
+            if suma_ralenti == 0:
+                porcentaje_ralenti = 0
+            else:
+                porcentaje_ralenti = (
+                    suma_ralenti/(suma_ralenti + suma_movimiento))
 
             if suma_movimiento > 0 or suma_ralenti > 0:
                 dias_uso = 1

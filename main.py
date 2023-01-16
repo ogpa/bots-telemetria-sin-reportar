@@ -18,6 +18,11 @@ hora_reporte = seleccionar_hora()  # Ayer u Hoy según la hora actual, Fecha par
 print(hora_reporte[0])
 
 
+print("Ejecutando Geotab.")
+start_time = time.time()
+geotab_df = scan_geotab(hora_reporte[0])
+print("Geotab tardó %s segundos." % (time.time() - start_time))
+
 print("Ejecutando Goldcar.")
 start_time = time.time()
 goldcar_df = scan_goldcar(hora_reporte[0])
@@ -33,10 +38,7 @@ start_time = time.time()
 hunter_df = scan_hunter(hora_reporte[0])
 print("Hunter tardó %s segundos." % (time.time() - start_time))
 
-print("Ejecutando Geotab.")
-start_time = time.time()
-geotab_df = scan_geotab(hora_reporte[0])
-print("Geotab tardó %s segundos." % (time.time() - start_time))
+
 
 dfs = [comsatel_df, hunter_df, geotab_df, goldcar_df]
 #dfs = [comsatel_df, hunter_df, geotab_df]

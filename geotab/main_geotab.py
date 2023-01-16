@@ -6,11 +6,17 @@ from geotab.distancia import distancia
 
 
 dbs = ["sanfernando", "bureauveritas",
-       "mitsuidelperu", "mibanco", "cofasa", "mb_renting", "agricolachira"]
+       "mitsuidelperu", "mibanco", "cofasa", "mb_renting", "agricolachira","ponedora"]
 #dbs = ["sanfernando", "mibanco"]
 USUARIO_BOT_GEOTAB = "bot-telemetria@mb-renting.com"
 CLAVE_BOT_GEOTAB = "FlotasMBRenting2k23$"
 
+def ahora():
+    hoy = datetime.now() + timedelta(hours=5)  # El 5 es por hora de peru
+    hoy_geotab_str = mygeotab.dates.format_iso_datetime(hoy)
+    hoy_geotab_obj = datetime.strptime(hoy_geotab_str,'%Y-%m-%dT%H:%M:%S.%fZ')
+    #print(hoy_geotab)
+    return hoy_geotab_obj
 
 def ayer():
     d = datetime.today() - timedelta(days=1)
@@ -59,29 +65,42 @@ def scan_geotab(hora_reporte):
 
         # Obtener aquí la lista de ids y placas
         for s in dsi:
-            lista_fecha.append(fecha_payload)
-            lista_proveedor.append("Geotab")
-            lista_database.append(dbs[x])
+            
             # Obtengo todos los vehículos de esa BD y creo los multicall
             multi_calls_device.append(
                 ["Get", dict(typeName="Device", search={"id": s["device"]["id"]})])
 
         r_multi_device = api.multi_call(multi_calls_device)
         # print(r_multi_device)
+        hora_actual = ahora() 
         for r in r_multi_device:
-            lista_descripcion_vehiculo.append(r[0]["name"])
-            lista_placa.append(r[0]["licensePlate"])
-            lista_id.append(r[0]["id"])
+            
+            activeTo_naive = r[0]["activeTo"].replace(tzinfo=None)
+
+            if activeTo_naive > hora_actual:
+                lista_fecha.append(fecha_payload)
+                lista_proveedor.append("Geotab")
+                lista_database.append(dbs[x])
+                lista_descripcion_vehiculo.append(r[0]["name"])
+                lista_placa.append(r[0]["licensePlate"])
+                lista_id.append(r[0]["id"])
 
         dict_datos_vehiculos = {
-            "placa": lista_placa,
+            "placa": lista_placa, 
             "descripcion_vehiculo": lista_descripcion_vehiculo,
             "fecha": lista_fecha,
             "proveedor": lista_proveedor,
             "database": lista_database,
             "id": lista_id
         }
+        print(len(lista_placa)) #29
+        print(len(lista_descripcion_vehiculo)) #29
+        print(len(lista_fecha)) #128
+        print(len(lista_proveedor)) #128
+        print(len(lista_database)) #128
+        print(len(lista_id)) #29
         df_datos_vehiculos = pd.DataFrame(dict_datos_vehiculos)
+        
         df_h_y_v = horas_y_velocidad(lista_id, credenciales, hora_reporte)
         df_distancia = distancia(lista_id, credenciales, hora_reporte)
 

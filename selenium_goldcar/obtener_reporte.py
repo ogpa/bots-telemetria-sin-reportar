@@ -113,7 +113,7 @@ def csv_kilometraje_horas(archivo):
                        sheet_name="Kilometraje por Viajes")
     df = df.iloc[:, [1, 2, 4]]
     df = df.rename(
-        columns={df.columns[0]: "descripcion_vehiculo", df.columns[1]: "distancia", df.columns[2]: "velocidad maxima"})
+        columns={df.columns[0]: "descripcion_vehiculo", df.columns[1]: "distancia", df.columns[2]: "velocidad_maxima"})
     df = df.drop(df[(df["descripcion_vehiculo"] == "Total")].index)
     df["placa"] = df.apply(
         lambda x: convertir_placa(x["descripcion_vehiculo"]), axis=1)

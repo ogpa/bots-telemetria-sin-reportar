@@ -37,7 +37,8 @@ def convertir_hhmmss(hhmmss):
 api = mygeotab.API(username=USUARIO_BOT_GEOTAB,
                    password=CLAVE_BOT_GEOTAB, database="mb_renting", server="my.geotab.com")
 credenciales = api.authenticate()
-#dsi = api.get('DeviceStatusInfo')
+dsi = api.get('DeviceStatusInfo')
+print(dsi)
 
 # device = api.multi_call(
 #     [["Get", dict(typeName="Device", search={"id": "b50"})]])
@@ -136,4 +137,4 @@ print(hora)
 # dias de uso
 # proveedor
 # fecha
-print(credenciales.session_id)
+#print(credenciales.session_id)

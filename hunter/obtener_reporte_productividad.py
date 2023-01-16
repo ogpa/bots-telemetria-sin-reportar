@@ -137,7 +137,8 @@ def crear_csv_productividad(respuesta, fecha):
                           "distancia": lista_distancia,
                           "velocidad_maxima": lista_velocidad_maxima,
                           "horas_ralenti": lista_duracion_ralenti,
-                          "porcentaje_ralenti": lista_porcentaje_ralenti}
+                          "porcentaje_ralenti": lista_porcentaje_ralenti ,
+                          "proveedor":"Hunter"}
     productividad_df = pd.DataFrame(dict_productividad)
     #productividad_df_filename = "hunter_productividad.csv"
     #productividad_df.to_csv(productividad_df_filename, index=False)

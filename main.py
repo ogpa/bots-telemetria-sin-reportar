@@ -2,7 +2,7 @@ from common.seleccionar_hora import seleccionar_hora
 from comsatel.main_comsatel import scan_comsatel
 from hunter.main_hunter import scan_hunter
 from geotab.main_geotab import scan_geotab
-from selenium_goldcar.main_goldcar import scan_goldcar
+from goldcar.main_goldcar import scan_goldcar
 import pandas as pd
 import boto3
 from datetime import datetime, timezone, timedelta
@@ -14,19 +14,20 @@ S3_RUTA_FOLDER_RECIENTE_HOY = "bi-telemetria/productividad/reciente/hoy/"
 S3_RUTA_FOLDER_RECIENTE_AYER = "bi-telemetria/productividad/reciente/ayer/"
 
 
-hora_reporte = seleccionar_hora()  # Ayer u Hoy según la hora actual, Fecha para histórico dd-mm-yyyy
+# Ayer u Hoy según la hora actual, Fecha para histórico dd-mm-yyyy
+hora_reporte = seleccionar_hora()
 print(hora_reporte[0])
 
+print("Ejecutando Goldcar.")
+start_time = time.time()
+goldcar_df = scan_goldcar(hora_reporte[0])
+print("Goldcar tardó %s segundos." % (time.time() - start_time))
 
 print("Ejecutando Geotab.")
 start_time = time.time()
 geotab_df = scan_geotab(hora_reporte[0])
 print("Geotab tardó %s segundos." % (time.time() - start_time))
 
-print("Ejecutando Goldcar.")
-start_time = time.time()
-goldcar_df = scan_goldcar(hora_reporte[0])
-print("Goldcar tardó %s segundos." % (time.time() - start_time))
 
 print("Ejecutando Comsatel.")
 start_time = time.time()
@@ -39,9 +40,8 @@ hunter_df = scan_hunter(hora_reporte[0])
 print("Hunter tardó %s segundos." % (time.time() - start_time))
 
 
-
 dfs = [comsatel_df, hunter_df, geotab_df, goldcar_df]
-#dfs = [comsatel_df, hunter_df, geotab_df]
+#dfs = [goldcar_df]
 main_df = pd.concat(dfs)
 
 nombre_archivo = hora_reporte[0] + "_productividad.csv"
@@ -56,7 +56,7 @@ if hora_reporte[0] == "Hoy":
 elif hora_reporte[0] == "Ayer":
     with open(nombre_archivo, "rb") as f:
         s3.upload_fileobj(f, S3_BUCKET_NAME,
-                          S3_RUTA_FOLDER_HISTORICO + hora_reporte[1] + "_productividad.csv") #Formato 13-01-2023_productividad.csv
+                          S3_RUTA_FOLDER_HISTORICO + hora_reporte[1] + "_productividad.csv")  # Formato 13-01-2023_productividad.csv
     with open(nombre_archivo, "rb") as f:
         s3.upload_fileobj(f, S3_BUCKET_NAME,
                           S3_RUTA_FOLDER_RECIENTE_AYER + nombre_archivo)

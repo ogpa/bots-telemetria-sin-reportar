@@ -1,5 +1,5 @@
 from login_hunter_pro import login_hunter_pro
-from abrir_reportes import abrir_reportes
+from ultimo_estado import ultimo_estado
 #from hunter.obtener_reporte_productividad import obtener_reporte_productividad
 #from hunter.extraer_codigos_placas import extraer_codigos_placas
 
@@ -7,7 +7,7 @@ from abrir_reportes import abrir_reportes
 def scan_hunter_pro(hora_reporte):
     
     l = login_hunter_pro()
-    rep = abrir_reportes(l)
+    df_ue = ultimo_estado(l)
     # c = extraer_codigos_placas(l)
     # df = obtener_reporte_productividad(c, hora_reporte)
     # subir_s3(p)

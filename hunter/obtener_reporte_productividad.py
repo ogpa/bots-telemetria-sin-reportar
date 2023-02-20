@@ -113,7 +113,7 @@ def crear_csv_productividad(respuesta, fecha):
             lista_placa.append(placa)
             descripcion_vehiculo = limpiar_descripcion_vehiculo(td[0].text)
             lista_descripcion_vehiculo.append(descripcion_vehiculo)
-            lista_fecha.append(fecha)
+            # lista_fecha.append(fecha)
             lista_tipo_reporte.append(TIPO_REPORTE)
             lista_dias_usados.append(td[1].text)
             duracion = convertir_hhmmss(td[2].text)
@@ -130,15 +130,15 @@ def crear_csv_productividad(respuesta, fecha):
 
     dict_productividad = {"placa": lista_placa,
                           "descripcion_vehiculo": lista_descripcion_vehiculo,
-                          "fecha": lista_fecha,
+                          "fecha": fecha,
                           "tipo_reporte": lista_tipo_reporte,
                           "dias_uso": lista_dias_usados,
                           "horas_movimiento": lista_duracion,
                           "distancia": lista_distancia,
                           "velocidad_maxima": lista_velocidad_maxima,
                           "horas_ralenti": lista_duracion_ralenti,
-                          "porcentaje_ralenti": lista_porcentaje_ralenti ,
-                          "proveedor":"Hunter"}
+                          "porcentaje_ralenti": lista_porcentaje_ralenti,
+                          "proveedor": "Hunter"}
     productividad_df = pd.DataFrame(dict_productividad)
     #productividad_df_filename = "hunter_productividad.csv"
     #productividad_df.to_csv(productividad_df_filename, index=False)

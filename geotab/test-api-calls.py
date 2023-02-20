@@ -5,6 +5,7 @@ import pandas as pd
 from mygeotab import API
 USUARIO_BOT_GEOTAB = "bot-telemetria@mb-renting.com"
 CLAVE_BOT_GEOTAB = "FlotasMBRenting2k23$"
+ODOMETRO_METROS_A_KILOMETROS = 1000
 
 
 def extraer_texto(textomaster, ini_cabecera, fin_cabecera):
@@ -35,11 +36,13 @@ def convertir_hhmmss(hhmmss):
 
 
 api = mygeotab.API(username=USUARIO_BOT_GEOTAB,
-                   password=CLAVE_BOT_GEOTAB, database="mb_renting", server="my.geotab.com")
+                   password=CLAVE_BOT_GEOTAB, database="sanfernando", server="my.geotab.com")
 credenciales = api.authenticate()
 dsi = api.get('DeviceStatusInfo')
-print(dsi)
-
+# print(dsi)
+lista_ids = []
+for d in dsi:
+    lista_ids.append(d["device"]["id"])
 # device = api.multi_call(
 #     [["Get", dict(typeName="Device", search={"id": "b50"})]])
 # print(device[0][0]["licensePlate"])
@@ -102,16 +105,52 @@ hora = ahora()
 
 # Odómetro GPS
 # id: b70
-print(hora)
+# print(hora)
 # odometro_gps_actual = api.call(method="Get", typeName="StatusData", search={
 #     "deviceSearch": {"id": "b70"}, "diagnosticSearch": {"id": "DiagnosticOdometerAdjustmentId"}})
 # print(odometro_gps_actual)
 
-# odometro_gps_inicio_ayer = api.call(method="Get", typeName="StatusData", search={"fromDate": "2023-01-03T05:00:00.000Z", "toDate": "2023-01-03T05:00:00.000Z", "deviceSearch": {"id": "b70"},
-#                                                                                  "diagnosticSearch": {"id": "DiagnosticOdometerAdjustmentId"}})
+fecha = "2023-02-07T14:53:00.000Z"
+
+#odometro_gps_inicio_ayer = api.call(method="Get", typeName="StatusData", search={"fromDate": fecha, "toDate": fecha,"diagnosticSearch": {"id": "DiagnosticOdometerAdjustmentId"}})
 # odometro_gps_fin_ayer = api.call(method="Get", typeName="StatusData", search={"fromDate": "2023-01-04T05:00:00.000Z", "toDate": "2023-01-04T05:00:00.000Z", "deviceSearch": {"id": "b70"},
 #                                                                               "diagnosticSearch": {"id": "DiagnosticOdometerAdjustmentId"}})
-# print(odometro_gps_inicio_ayer[0]["data"])
+multi_calls_odometro = []
+for i in lista_ids:
+    # Obtengo todos los vehículos de esa BD y creo los multicall
+    # print(s)
+    multi_calls_odometro.append(
+        ["Get", dict(typeName="StatusData", search={"fromDate": fecha, "toDate": fecha, "deviceSearch": {"id": i}, "diagnosticSearch": {"id": "DiagnosticRawOdometerId"}})])
+
+username = credenciales.username
+# print(username)
+database = credenciales.database
+# print(database)
+server = credenciales.server
+# print(server)
+session_id = credenciales.session_id
+
+api = mygeotab.API(username=username, database=database,
+                   server=server, session_id=session_id)
+r_statusdata_multi_odometro = api.multi_call(multi_calls_odometro)
+
+lista_id_temp = []
+lista_odometro = []
+for status in r_statusdata_multi_odometro:
+
+    if len(status) > 0:
+        id = status[0]["device"]["id"]
+        lista_id_temp.append(id)
+        odometro = status[0]["data"]
+        lista_odometro.append(
+            odometro / ODOMETRO_METROS_A_KILOMETROS)
+dict_id_odometro = {
+    "id": lista_id_temp,
+    "odometro": lista_odometro
+}
+df_odometro = pd.DataFrame(dict_id_odometro)
+df_odometro.to_csv("odometro_geotab.csv", index=False)
+# print(odometro_gps_inicio_ayer)
 # print(odometro_gps_fin_ayer[0]["data"])
 
 # km_ayer = odometro_gps_fin_ayer[0]["data"] - \
@@ -137,4 +176,4 @@ print(hora)
 # dias de uso
 # proveedor
 # fecha
-#print(credenciales.session_id)
+# print(credenciales.session_id)

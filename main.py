@@ -3,6 +3,7 @@ from comsatel.main_comsatel import scan_comsatel
 from hunter.main_hunter import scan_hunter
 from geotab.main_geotab import scan_geotab
 from goldcar.main_goldcar import scan_goldcar
+from hunter_pro.main_hunter_pro import scan_hunter_pro
 import pandas as pd
 import boto3
 from datetime import datetime, timezone, timedelta
@@ -17,6 +18,11 @@ S3_RUTA_FOLDER_RECIENTE_AYER = "bi-telemetria/productividad/reciente/ayer/"
 # Ayer u Hoy según la hora actual, Fecha para histórico dd-mm-yyyy
 hora_reporte = seleccionar_hora()
 print(hora_reporte[0])
+
+print("Ejecutando Hunter Pro.")
+start_time = time.time()
+hunter_pro_df = scan_hunter_pro(hora_reporte[0])
+print("Hunter Pro tardó %s segundos." % (time.time() - start_time))
 
 print("Ejecutando Goldcar.")
 start_time = time.time()

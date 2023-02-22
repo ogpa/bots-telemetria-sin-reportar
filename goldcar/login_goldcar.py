@@ -3,14 +3,8 @@ import urllib
 from goldcar.funciones_goldcar.extraer_datos_session import extraer_datos_session
 from goldcar.funciones_goldcar.obtener_millis import obtener_millis
 from goldcar.funciones_goldcar.obtener_millis_now import obtener_millis_now
-from oauth2client.client import OAuth2WebServerFlow
-from oauth2client.tools import run_flow
-from oauth2client.file import Storage
-import json
-import os
-import re
-import httplib2
-from oauth2client import GOOGLE_REVOKE_URI, GOOGLE_TOKEN_URI, client
+
+
 import requests
 import pandas as pd
 from bs4 import BeautifulSoup

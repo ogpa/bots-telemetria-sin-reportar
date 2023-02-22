@@ -1,7 +1,6 @@
 import requests
 import json
-from funciones_hunter_pro.extraer_datos_session import extraer_datos_session
-from fecha_hoy_hunter_pro import fecha_hoy_hunter_pro
+from hunter_pro.fecha_hoy_hunter_pro import fecha_hoy_hunter_pro
 import pandas as pd
 
 HUN_URL_BASE = "http://www.huntermonitoreopro.com"

@@ -1,7 +1,7 @@
 import requests
 import json
-from funciones_hunter_pro.extraer_datos_session import extraer_datos_session
-from fecha_ayer_hunter_pro import fecha_ayer_hunter_pro
+from hunter_pro.funciones_hunter_pro.extraer_datos_session import extraer_datos_session
+from hunter_pro.fecha_ayer_hunter_pro import fecha_ayer_hunter_pro
 import pandas as pd
 from datetime import datetime, timedelta
 
@@ -51,6 +51,14 @@ def calcular_porcentaje_ralenti(duracion, duracion_ralenti):
             int(duracion_ralenti)/(int(duracion)+int(duracion_ralenti)))
     return porcentaje_ralenti
 
+def convertir_placa(alias):
+    c = "-"
+    pos_guion = alias.find(c)
+    if pos_guion != -1:
+        placa = alias[pos_guion-3:pos_guion+4]
+    else:
+        placa = alias
+    return placa
 
 def productividad(l, hora_reporte):
     # l = cookie_asp,rurl_Login,aspx_Login
@@ -63,6 +71,8 @@ def productividad(l, hora_reporte):
     lista_distancia = []  # Esto es para el reporte de odometro
     lista_porcentaje_ralenti = []
     lista_dias_uso = []
+    lista_fecha = []
+    lista_proveedor = []
     # print(response_Report.text)
 
     # Ultimo estado: Posicion y odometro
@@ -157,9 +167,11 @@ def productividad(l, hora_reporte):
     data_Productividad = data_dict_Productividad["Data"]
     for d in data_Productividad:
         lista_alias.append(d["Vehículo"])
+
+        placa = convertir_placa(d["Vehículo"])
+        lista_placa.append(placa)
         if d["TiempoRalentí"] == "":
             lista_ralenti.append(0)
-
         else:
             lista_ralenti.append(int(d["TiempoRalentí"])/3600)
 
@@ -175,22 +187,26 @@ def productividad(l, hora_reporte):
             d["TiempoRalentí"], d["Tiempodemanejo"])
         lista_porcentaje_ralenti.append(porcentaje_ralenti)
 
-        if (int(d["Tiempodemanejo"]) > 0) or (int(d["TiempoRalentí"]) > 0):
-            dias_uso = 1
-        else:
+        
+        if (d["Tiempodemanejo"] == "") or (d["Tiempodemanejo"] == "") or (d["Tiempodemanejo"] == "0"):
             dias_uso = 0
+        else:
+            dias_uso = 1
         lista_dias_uso.append(dias_uso)
+        # lista_fecha.append(fecha_payload)
+        # lista_proveedor.append("hunter_pro")
 
     dict_Productividad = {
+        "placa": lista_placa,
         "descripcion_vehiculo": lista_alias,
         "distancia": lista_distancia,
         "horas_ralenti": lista_ralenti,
         "horas_movimiento": lista_conduccion,
         "velocidad_maxima": lista_velocidad_maxima,
-        "fecha": fecha_payload,
         "dias_uso": lista_dias_uso,
-        "proveedor": "hunter_pro"
     }
-    # print(dict_Productividad)
+    #print(dict_Productividad)
     df_productividad = pd.DataFrame(dict_Productividad)
+    df_productividad["fecha"] = fecha_payload[1]
+    df_productividad["proveedor"]="hunter_pro"
     return df_productividad

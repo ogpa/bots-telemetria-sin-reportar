@@ -6,7 +6,7 @@ from geotab.distancia import distancia
 
 
 dbs = ["sanfernando", "bureauveritas",
-       "mitsuidelperu", "mibanco", "cofasa", "mb_renting", "agricolachira", "ponedora", "hipraperu"]
+       "mitsuidelperu", "mibanco", "cofasa", "agricolachira", "ponedora", "hipraperu"]
 #dbs = ["sanfernando", "mibanco"]
 USUARIO_BOT_GEOTAB = "bot-telemetria@mb-renting.com"
 CLAVE_BOT_GEOTAB = "FlotasMBRenting2k23$"

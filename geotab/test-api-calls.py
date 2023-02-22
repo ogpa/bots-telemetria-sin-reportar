@@ -36,7 +36,7 @@ def convertir_hhmmss(hhmmss):
 
 
 api = mygeotab.API(username=USUARIO_BOT_GEOTAB,
-                   password=CLAVE_BOT_GEOTAB, database="sanfernando", server="my.geotab.com")
+                   password=CLAVE_BOT_GEOTAB, database="mibanco", server="my.geotab.com")
 credenciales = api.authenticate()
 dsi = api.get('DeviceStatusInfo')
 # print(dsi)
@@ -110,7 +110,7 @@ hora = ahora()
 #     "deviceSearch": {"id": "b70"}, "diagnosticSearch": {"id": "DiagnosticOdometerAdjustmentId"}})
 # print(odometro_gps_actual)
 
-fecha = "2023-02-07T14:53:00.000Z"
+fecha = "2023-02-01T04:59:59.000Z"
 
 #odometro_gps_inicio_ayer = api.call(method="Get", typeName="StatusData", search={"fromDate": fecha, "toDate": fecha,"diagnosticSearch": {"id": "DiagnosticOdometerAdjustmentId"}})
 # odometro_gps_fin_ayer = api.call(method="Get", typeName="StatusData", search={"fromDate": "2023-01-04T05:00:00.000Z", "toDate": "2023-01-04T05:00:00.000Z", "deviceSearch": {"id": "b70"},

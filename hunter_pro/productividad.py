@@ -1,7 +1,7 @@
 import requests
 import json
-from hunter_pro.funciones_hunter_pro.extraer_datos_session import extraer_datos_session
-from hunter_pro.fecha_ayer_hunter_pro import fecha_ayer_hunter_pro
+from funciones_hunter_pro.extraer_datos_session import extraer_datos_session
+from fecha_ayer_hunter_pro import fecha_ayer_hunter_pro
 import pandas as pd
 from datetime import datetime, timedelta
 
@@ -51,6 +51,7 @@ def calcular_porcentaje_ralenti(duracion, duracion_ralenti):
             int(duracion_ralenti)/(int(duracion)+int(duracion_ralenti)))
     return porcentaje_ralenti
 
+
 def convertir_placa(alias):
     c = "-"
     pos_guion = alias.find(c)
@@ -59,6 +60,7 @@ def convertir_placa(alias):
     else:
         placa = alias
     return placa
+
 
 def productividad(l, hora_reporte):
     # l = cookie_asp,rurl_Login,aspx_Login
@@ -75,6 +77,26 @@ def productividad(l, hora_reporte):
     lista_proveedor = []
     # print(response_Report.text)
 
+    payload_Report = {}
+    headers_Report = {
+        'authority': 'huntermonitoreopro.com',
+        'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+        'accept-language': 'en',
+        'cookie': l[1] + "; " + l[2] + "; " + CABECERA_ASPNET + l[0],
+        'referer': HUN_URL_LIVE,
+        'sec-ch-ua': '"Not_A Brand";v="99", "Google Chrome";v="109", "Chromium";v="109"',
+        'sec-ch-ua-mobile': '?0',
+        'sec-ch-ua-platform': '"Windows"',
+        'sec-fetch-dest': 'document',
+        'sec-fetch-mode': 'navigate',
+        'sec-fetch-site': 'same-origin',
+        'sec-fetch-user': '?1',
+        'upgrade-insecure-requests': '1',
+        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36'
+    }
+
+    response_Report = requests.request(
+        "GET", HUN_URL_REPORT, headers=headers_Report, data=payload_Report)
     # Ultimo estado: Posicion y odometro
 
     # Deseleccionar check celeste de Vehiculo
@@ -116,7 +138,7 @@ def productividad(l, hora_reporte):
     response_dict_Productividad = json.loads(
         response_RunReport_Productividad.text)
     id_reporte_Productividad = str(response_dict_Productividad["LogId"])
-    # print(id_reporte)
+    print("id_reporte_Productividad", id_reporte_Productividad)
 
     # Generar pestaña reporte
 
@@ -187,7 +209,6 @@ def productividad(l, hora_reporte):
             d["TiempoRalentí"], d["Tiempodemanejo"])
         lista_porcentaje_ralenti.append(porcentaje_ralenti)
 
-        
         if (d["Tiempodemanejo"] == "") or (d["Tiempodemanejo"] == "") or (d["Tiempodemanejo"] == "0"):
             dias_uso = 0
         else:
@@ -205,8 +226,8 @@ def productividad(l, hora_reporte):
         "velocidad_maxima": lista_velocidad_maxima,
         "dias_uso": lista_dias_uso,
     }
-    #print(dict_Productividad)
+    # print(dict_Productividad)
     df_productividad = pd.DataFrame(dict_Productividad)
     df_productividad["fecha"] = fecha_payload[1]
-    df_productividad["proveedor"]="hunter_pro"
+    df_productividad["proveedor"] = "hunter_pro"
     return df_productividad

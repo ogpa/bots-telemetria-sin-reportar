@@ -155,8 +155,8 @@ def login_goldcar():
         "GET", url_Authorize, allow_redirects=False, headers=headers_Authorize, data=payload_Authorize)
 
     url_Post_Message = response_Authorize.headers["location"]
-    print("url_Post_Message o location de Authorize")
-    print(url_Post_Message)
+    #print("url_Post_Message o location de Authorize")
+    # print(url_Post_Message)
     payload_Post_Message = {}
     headers_Post_Message = {
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
@@ -176,8 +176,8 @@ def login_goldcar():
 
     auth_hash = extraer_texto(url_Post_Message, "access_hash=", "&user_name")
 
-    print("auth_hash")
-    print(auth_hash)
+    # print("auth_hash")
+    # print(auth_hash)
 
     url_Ajax = "https://hst-api.wialon.com/wialon/ajax.html?svc=core/use_auth_hash&params=%7B%22authHash%22%3A%22" + auth_hash + \
         "%22%2C%22appName%22%3A%22web%2Fgpsenperu.gpsgoldcar.com%22%2C%22siteName%22%3A%22ccardenas%22%2C%22checkService%22%3A%22%22%7D&callback=__wialon_sdk_jsonp_1"
@@ -201,7 +201,7 @@ def login_goldcar():
     # print("response_Ajax.text")
     # print(response_Ajax.text)
     sid = extraer_texto(response_Ajax.text, '"eid":"', '"')
-    print(sid)
+    # print(sid)
 
     url_Sid = "http://gpsenperu.gpsgoldcar.com/?sid=" + sid
     payload_Sid = {}

@@ -50,7 +50,7 @@ def scan_geotab(hora_reporte):
     cant_dbs = len(dbs)
 
     for x in range(cant_dbs):
-        print(dbs[x])
+        # print(dbs[x])
         api = mygeotab.API(username=USUARIO_BOT_GEOTAB,
                            password=CLAVE_BOT_GEOTAB, database=dbs[x])
         credenciales = api.authenticate()

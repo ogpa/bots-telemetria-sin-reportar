@@ -10,7 +10,7 @@ COM_URL_BASE_CLREPORTES = "http://clreportes.comsatel.com.pe"
 
 
 def fecha(delta):
-    d = datetime.today() - timedelta(days=delta)
+    d = datetime.today() - timedelta(days=delta, hours=5)
     fecha_ddmmyyyy = d.strftime("%d/%m/%Y")
     return fecha_ddmmyyyy
 

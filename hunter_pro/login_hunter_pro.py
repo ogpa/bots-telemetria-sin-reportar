@@ -1,6 +1,6 @@
 import requests
 import urllib
-from hunter_pro.funciones_hunter_pro.extraer_datos_session import extraer_datos_session
+from funciones_hunter_pro.extraer_datos_session import extraer_datos_session
 
 HUN_URL_BASE = "http://www.huntermonitoreopro.com"
 HUN_URL_LOGIN = "https://huntermonitoreopro.com/Account/LogOn?"

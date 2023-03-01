@@ -3,36 +3,33 @@ from comsatel.main_comsatel import scan_comsatel
 from hunter.main_hunter import scan_hunter
 from geotab.main_geotab import scan_geotab
 from goldcar.main_goldcar import scan_goldcar
-from hunter_pro.main_hunter_pro import scan_hunter_pro
+#from hunter_pro.main_hunter_pro import scan_hunter_pro
 import pandas as pd
 import boto3
-from datetime import datetime, timezone, timedelta
 import time
 
-S3_BUCKET_NAME = "apps-mbr"
-S3_RUTA_FOLDER_HISTORICO = "bi-telemetria/productividad/historico/"
-S3_RUTA_FOLDER_RECIENTE_HOY = "bi-telemetria/productividad/reciente/hoy/"
-S3_RUTA_FOLDER_RECIENTE_AYER = "bi-telemetria/productividad/reciente/ayer/"
+S3_BUCKET_NAME = "apps-mbr-innovacion"
+S3_RUTA_FOLDER_PRODUCTIVIDAD = "bi-telemetria/productividad/"
 
 
 # Ayer u Hoy según la hora actual, Fecha para histórico dd-mm-yyyy
 hora_reporte = seleccionar_hora()
 print(hora_reporte[0])
 
-print("Ejecutando Hunter Pro.")
-start_time = time.time()
-hunter_pro_df = scan_hunter_pro(hora_reporte[0])
-#print(hunter_pro_df)
-print("Hunter Pro tardó %s segundos." % (time.time() - start_time))
+# print("Ejecutando Hunter Pro.")
+# start_time = time.time()
+# hunter_pro_df = scan_hunter_pro(hora_reporte[0])
+# #print(hunter_pro_df)
+# print("Hunter Pro tardó %s segundos." % (time.time() - start_time))
 
 print("Ejecutando Goldcar.")
 start_time = time.time()
-goldcar_df = scan_goldcar(hora_reporte[0])
+goldcar_df = scan_goldcar("Ayer")
 print("Goldcar tardó %s segundos." % (time.time() - start_time))
 
 print("Ejecutando Geotab.")
 start_time = time.time()
-geotab_df = scan_geotab(hora_reporte[0])
+geotab_df = scan_geotab("Ayer")
 print("Geotab tardó %s segundos." % (time.time() - start_time))
 
 
@@ -43,18 +40,18 @@ print("Comsatel tardó %s segundos." % (time.time() - start_time))
 
 print("Ejecutando Hunter.")
 start_time = time.time()
-hunter_df = scan_hunter(hora_reporte[0])
+hunter_df = scan_hunter("Ayer")
 print("Hunter tardó %s segundos." % (time.time() - start_time))
 
+#dfs = [hunter_pro_df, comsatel_df, hunter_df, geotab_df, goldcar_df]
 
-dfs = [hunter_pro_df,comsatel_df, hunter_df, geotab_df, goldcar_df]
-#dfs = [hunter_pro_df]
+dfs = [comsatel_df, hunter_df, geotab_df, goldcar_df]
 main_df = pd.concat(dfs)
 
 nombre_archivo = hora_reporte[0] + "_productividad.csv"
 main_df.to_csv(nombre_archivo, index=False)
-#comsatel_df.to_csv(nombre_archivo, index=False)
-# s3 = boto3.client('s3')
+
+s3 = boto3.client('s3')
 
 # if hora_reporte[0] == "Hoy":
 #     with open(nombre_archivo, "rb") as f:
@@ -67,3 +64,7 @@ main_df.to_csv(nombre_archivo, index=False)
 #     with open(nombre_archivo, "rb") as f:
 #         s3.upload_fileobj(f, S3_BUCKET_NAME,
 #                           S3_RUTA_FOLDER_RECIENTE_AYER + nombre_archivo)
+
+with open(nombre_archivo, "rb") as f:
+    s3.upload_fileobj(f, S3_BUCKET_NAME,
+                      S3_RUTA_FOLDER_PRODUCTIVIDAD + hora_reporte[1] + "_productividad.csv")  # Formato 13-01-2023_productividad.csv

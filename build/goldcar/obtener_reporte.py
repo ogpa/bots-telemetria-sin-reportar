@@ -7,8 +7,8 @@ from datetime import datetime, timedelta
 import numpy as np
 import os
 
-filename_horas_trabajadas = "Horas_Trabajadas.xlsx"
-filename_kilometraje_horas = "Kilometraje_Horas.xlsx"
+filename_horas_trabajadas = "/tmp/" + "Horas_Trabajadas.xlsx"
+filename_kilometraje_horas = "/tmp/" + "Kilometraje_Horas.xlsx"
 
 
 def extraer_texto(textomaster, ini_cabecera, fin_cabecera):

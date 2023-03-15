@@ -22,35 +22,36 @@ print(hora_reporte[0])
 # #print(hunter_pro_df)
 # print("Hunter Pro tardó %s segundos." % (time.time() - start_time))
 
+print("Ejecutando Goldcar.")
+start_time = time.time()
+goldcar_df = scan_goldcar("Ayer")
+print("Goldcar tardó %s segundos." % (time.time() - start_time))
+
+print("Ejecutando Geotab.")
+start_time = time.time()
+geotab_df = scan_geotab("Ayer")
+print("Geotab tardó %s segundos." % (time.time() - start_time))
+
+
 print("Ejecutando Comsatel.")
 start_time = time.time()
 comsatel_df = scan_comsatel("Ayer")
 print("Comsatel tardó %s segundos." % (time.time() - start_time))
 
-# print("Ejecutando Goldcar.")
-# start_time = time.time()
-# goldcar_df = scan_goldcar("Ayer")
-# print("Goldcar tardó %s segundos." % (time.time() - start_time))
-
-# print("Ejecutando Geotab.")
-# start_time = time.time()
-# geotab_df = scan_geotab("Ayer")
-# print("Geotab tardó %s segundos." % (time.time() - start_time))
-
-# print("Ejecutando Hunter.")
-# start_time = time.time()
-# hunter_df = scan_hunter("Ayer")
-# print("Hunter tardó %s segundos." % (time.time() - start_time))
+print("Ejecutando Hunter.")
+start_time = time.time()
+hunter_df = scan_hunter("Ayer")
+print("Hunter tardó %s segundos." % (time.time() - start_time))
 
 #dfs = [hunter_pro_df, comsatel_df, hunter_df, geotab_df, goldcar_df]
-dfs =[comsatel_df]
-#dfs = [comsatel_df, hunter_df, geotab_df, goldcar_df]
+
+dfs = [comsatel_df, hunter_df, geotab_df, goldcar_df]
 main_df = pd.concat(dfs)
 
-nombre_archivo = hora_reporte[0] + "_productividad.csv"
+nombre_archivo = "/tmp/" + hora_reporte[0] + "_productividad.csv"
 main_df.to_csv(nombre_archivo, index=False)
 
-# s3 = boto3.client('s3')
+s3 = boto3.client('s3')
 
 # if hora_reporte[0] == "Hoy":
 #     with open(nombre_archivo, "rb") as f:
@@ -64,6 +65,6 @@ main_df.to_csv(nombre_archivo, index=False)
 #         s3.upload_fileobj(f, S3_BUCKET_NAME,
 #                           S3_RUTA_FOLDER_RECIENTE_AYER + nombre_archivo)
 
-# with open(nombre_archivo, "rb") as f:
-#     s3.upload_fileobj(f, S3_BUCKET_NAME,
-#                       S3_RUTA_FOLDER_PRODUCTIVIDAD + hora_reporte[1] + "_productividad.csv")  # Formato 13-01-2023_productividad.csv
+with open(nombre_archivo, "rb") as f:
+    s3.upload_fileobj(f, S3_BUCKET_NAME,
+                      S3_RUTA_FOLDER_PRODUCTIVIDAD + hora_reporte[1] + "_productividad.csv")  # Formato 13-01-2023_productividad.csv

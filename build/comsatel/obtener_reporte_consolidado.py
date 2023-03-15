@@ -10,7 +10,7 @@ COM_URL_BASE_CLREPORTES = "http://clreportes.comsatel.com.pe"
 
 
 def fecha(delta):
-    d = datetime.today() - timedelta(days=delta) - timedelta(hours=5)
+    d = datetime.today() - timedelta(days=delta, hours=5)
     fecha_ddmmyyyy = d.strftime("%d/%m/%Y")
     return fecha_ddmmyyyy
 
@@ -160,7 +160,7 @@ def obtener_reporte_consolidado(a, hora_reporte):  # Datos de abrir_reportes
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36'
     }
 
-    nombreArchivo_Comsatel_local = hora_reporte + "_Consolidado_Comsatel.xlsx"
+    nombreArchivo_Comsatel_local = "/tmp/" + hora_reporte + "_Consolidado_Comsatel.xlsx"
 
     response_DescargaExcel = requests.request(
         "POST", COM_URL_CONSOLIDADO, headers=headers_DescargarExcel, data=payload_DescargarExcel)

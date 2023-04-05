@@ -60,5 +60,5 @@ def login_comsatel():
     response_Main = requests.request(
         "GET", COM_URL_MAIN, headers=headers_Main, data=payload_Main)
 
-    # print(response_Main.text)
+    #print(response_Main.text)
     return response_Main, s_Login, c_b_Login

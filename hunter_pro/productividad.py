@@ -1,7 +1,8 @@
 import requests
 import json
-from funciones_hunter_pro.extraer_datos_session import extraer_datos_session
-from fecha_ayer_hunter_pro import fecha_ayer_hunter_pro
+from hunter_pro.funciones_hunter_pro.extraer_datos_session import extraer_datos_session
+from hunter_pro.fecha_ayer_hunter_pro import fecha_ayer_hunter_pro
+
 import pandas as pd
 from datetime import datetime, timedelta
 

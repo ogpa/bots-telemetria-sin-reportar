@@ -1,6 +1,6 @@
-from login_hunter_pro import login_hunter_pro
-from ultimo_estado import ultimo_estado
-from productividad import productividad
+from hunter_pro.login_hunter_pro import login_hunter_pro
+
+from hunter_pro.productividad import productividad
 import pandas as pd
 #from hunter.obtener_reporte_productividad import obtener_reporte_productividad
 #from hunter.extraer_codigos_placas import extraer_codigos_placas

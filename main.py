@@ -3,7 +3,7 @@ from comsatel.main_comsatel import scan_comsatel
 from hunter.main_hunter import scan_hunter
 from geotab.main_geotab import scan_geotab
 from goldcar.main_goldcar import scan_goldcar
-#from hunter_pro.main_hunter_pro import scan_hunter_pro
+from hunter_pro.main_hunter_pro import scan_hunter_pro
 import pandas as pd
 import boto3
 import time
@@ -27,23 +27,23 @@ start_time = time.time()
 comsatel_df = scan_comsatel("Ayer")
 print("Comsatel tardó %s segundos." % (time.time() - start_time))
 
-# print("Ejecutando Goldcar.")
-# start_time = time.time()
-# goldcar_df = scan_goldcar("Ayer")
-# print("Goldcar tardó %s segundos." % (time.time() - start_time))
+print("Ejecutando Goldcar.")
+start_time = time.time()
+goldcar_df = scan_goldcar("Ayer")
+print("Goldcar tardó %s segundos." % (time.time() - start_time))
 
-# print("Ejecutando Geotab.")
-# start_time = time.time()
-# geotab_df = scan_geotab("Ayer")
-# print("Geotab tardó %s segundos." % (time.time() - start_time))
+print("Ejecutando Geotab.")
+start_time = time.time()
+geotab_df = scan_geotab("Ayer")
+print("Geotab tardó %s segundos." % (time.time() - start_time))
 
-# print("Ejecutando Hunter.")
-# start_time = time.time()
-# hunter_df = scan_hunter("Ayer")
-# print("Hunter tardó %s segundos." % (time.time() - start_time))
+print("Ejecutando Hunter.")
+start_time = time.time()
+hunter_df = scan_hunter("Ayer")
+print("Hunter tardó %s segundos." % (time.time() - start_time))
 
-#dfs = [hunter_pro_df, comsatel_df, hunter_df, geotab_df, goldcar_df]
-dfs =[comsatel_df]
+dfs = [comsatel_df, hunter_df, geotab_df, goldcar_df]
+#dfs =[goldcar_df]
 #dfs = [comsatel_df, hunter_df, geotab_df, goldcar_df]
 main_df = pd.concat(dfs)
 

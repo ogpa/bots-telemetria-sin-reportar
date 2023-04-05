@@ -11,7 +11,7 @@ COM_URL_BASE_CLREPORTES = "http://clreportes.comsatel.com.pe"
 
 def abrir_reportes(vs_main, s_login, c_login):  # Viewstate
 
-    payload_Pre_PopUpReporte = "javax.faces.partial.ajax=true&javax.faces.source=j_idt97%3AfnOpenItemMenu&javax.faces.partial.execute=%40all&j_idt97%3AfnOpenItemMenu=j_idt97%3AfnOpenItemMenu&pFuncionalidadId=119&pPadreId=8&pIrPagina=http%3A%2F%2Fclreportes.comsatel.com.pe%2FCLReporte%2F&j_idt97=j_idt97&javax.faces.ViewState=" + \
+    payload_Pre_PopUpReporte = "javax.faces.partial.ajax=true&javax.faces.source=j_idt104%3AfnOpenItemMenu&javax.faces.partial.execute=%40all&j_idt104%3AfnOpenItemMenu=j_idt104%3AfnOpenItemMenu&pFuncionalidadId=119&pPadreId=8&pIrPagina=http%3A%2F%2Fclreportes.comsatel.com.pe%2FCLReporte%2F&j_idt104=j_idt104&javax.faces.ViewState=" + \
         urllib.parse.quote(vs_main, safe="")
 
     headers_Pre_PopUpReporte = {

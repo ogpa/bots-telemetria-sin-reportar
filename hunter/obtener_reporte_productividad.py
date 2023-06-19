@@ -18,6 +18,7 @@ def juntar_codigos_placas(lista_codigos_placas):
         string_lista_codigos = string_lista_codigos + c + "%2C"
     # Eliminar últimos 3 caracteres
     string_lista_codigos = string_lista_codigos[:-3]
+    print(string_lista_codigos)
     return string_lista_codigos
 
 # payload yyyymmdd
@@ -156,9 +157,9 @@ def obtener_reporte_productividad(c, hora_reporte):
         'Upgrade-Insecure-Requests': '1',
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36'
     }
-    # response_Panel = requests.request(
-    #     "GET", HUN_URL_PANEL, headers=headers_Panel, data=payload_Panel)
-
+    #response_Panel = requests.request(
+    #    "GET", HUN_URL_PANEL, headers=headers_Panel, data=payload_Panel)
+    print("response_Panel")
     payload_Categoriaperfil = "tipoTree=entidad&idusuario=93084&idsubusuario=0&idperfil=4"
     headers_Categoriaperfil = {
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
@@ -172,9 +173,9 @@ def obtener_reporte_productividad(c, hora_reporte):
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36'
     }
 
-    # response_Categoriaperfil = requests.request(
-    #     "POST", HUN_URL_PRODUCTIVIDAD, headers=headers_Categoriaperfil, data=payload_Categoriaperfil)
-
+    #response_Categoriaperfil = requests.request(
+    #    "POST", HUN_URL_PRODUCTIVIDAD, headers=headers_Categoriaperfil, data=payload_Categoriaperfil)
+    print("response_Categoriaperfil")
     payload_Ajaxcontroller = "opcion=listarConductor&idUsuario=93084"
     headers_Ajaxcontroller = {
         'Accept': '*/*',
@@ -187,9 +188,9 @@ def obtener_reporte_productividad(c, hora_reporte):
         'X-Requested-With': 'XMLHttpRequest'
     }
 
-    # response_Ajaxcontroller = requests.request(
-    #     "POST", HUN_URL_AJAXCONTROLLER, headers=headers_Ajaxcontroller, data=payload_Ajaxcontroller)
-
+    #response_Ajaxcontroller = requests.request(
+    #    "POST", HUN_URL_AJAXCONTROLLER, headers=headers_Ajaxcontroller, data=payload_Ajaxcontroller)
+    print("response_Ajaxcontroller")
     payload_Saveranking = "idu=93084&idri=IRA&idrt=RESUMEN+DE+PRODUCTIVIDAD+DE+MANEJO&idsi=NULL&idst=NULL"
     headers_Saveranking = {
         'Accept': '*/*',
@@ -201,9 +202,9 @@ def obtener_reporte_productividad(c, hora_reporte):
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',
         'X-Requested-With': 'XMLHttpRequest'
     }
-    # response_Saveranking = requests.request(
-    #     "POST", HUN_URL_SAVERANKING, headers=headers_Saveranking, data=payload_Saveranking)
-
+    #response_Saveranking = requests.request(
+    #    "POST", HUN_URL_SAVERANKING, headers=headers_Saveranking, data=payload_Saveranking)
+    print("response_Saveranking")
     # Reporte: Resumen de Productividad de Manejo
 
     # 0: payload yyyymmdd
@@ -214,6 +215,7 @@ def obtener_reporte_productividad(c, hora_reporte):
     elif hora_reporte == "Hoy":
         fecha_payload = fecha(0)  # dd/mm/yyyy
     string_codigos_placas_payload = juntar_codigos_placas(c)
+    string_codigos_placas_payload = "866381056226381%2C866381056224055%2C866381056208322%2C866381056305276%2C866381056266437%2C866381056273847%2C866381056199778%2C866381056194878%2C860896050068055%2C860896050290402%2C866381056247833%2C860896050290519%2C4634600632%2C860896050607415%2C868574041164018%2C867553058042573%2C860896050003144%2C860896050131739%2C860896050044650%2C860896050044478%2C860896050146984%2C860896050273564%2C860896050003227%2C860896050121706%2C860896050133594%2C860896050003706%2C860896050082338%2C864606045286266%2C4764398075%2C860896050129386%2C860896050162940%2C860896050263748%2C4764393115%2C860896050151976%2C860896050069210%2C860896050256288%2C860896050261197%2C866381056250936%2C860896050168871%2C860896050151992%2C860896050168772%2C866381056290288%2C860896050007152%2C860896050012863%2C864352043792829%2C866381051424031%2C860896050162122%2C864352043600998%2C860896050128636%2C864352043620244%2C860896050098235%2C860896050105923%2C860896050278357%2C868574041097705%2C4764397977%2C868574040829553%2C868574041095865%2C868574041092094%2C868574041077038%2C868574041062550%2C868574040965449%2C868574041064416%2C868574041098554%2C868574041069787%2C4764425524"
     payload_Reporteproductividad = 'u=93084&v='+string_codigos_placas_payload + \
         '&i=' + fecha_payload[0] + '&f=' + fecha_payload[0] + '&vv=&cl='+CLAVE + \
         '&ts=RNT&e='+USUARIO+'**EG*01&version=undefined'
@@ -231,7 +233,7 @@ def obtener_reporte_productividad(c, hora_reporte):
 
     response_Reporteproductividad = requests.request(
         "POST", HUN_URL_PRODUCTIVIDAD, headers=headers_Reporteproductividad, data=payload_Reporteproductividad)
-
+    print("response_Reporteproductividad")
     df = crear_csv_productividad(
         response_Reporteproductividad.text, fecha_payload[1])
     return df

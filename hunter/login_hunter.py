@@ -2,7 +2,7 @@ import requests
 import urllib
 from hunter.funciones_hunter.extraer_datos_session import extraer_datos_session
 HUN_URL_BASE = "http://www.huntermonitoreoperu.com"
-HUN_URL_LOGIN = "http://www.huntermonitoreoperu.com/GeoV3.3/LoginV3.aspx"
+HUN_URL_LOGIN = "http://www.huntermonitoreoperu.com/GeoV3.3/LoginV4.aspx"
 HUN_URL_MAINHTML = "http://www.huntermonitoreoperu.com/GeoV3.3/Paginas/Main.html?r="
 HUN_URL_MAIN36 = "http://www.huntermonitoreoperu.com/GeoV3.3/Paginas/Main36.aspx"
 HUN_URL_ESTADOFLOTA = "http://www.huntermonitoreoperu.com/GeoV3.3/Paginas/EstadoFlota/Estado.aspx?TIME="

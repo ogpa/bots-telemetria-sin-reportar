@@ -19,7 +19,7 @@ print(hora_reporte[0])
 # print("Ejecutando Hunter Pro.")
 # start_time = time.time()
 # hunter_pro_df = scan_hunter_pro(hora_reporte[0])
-# #print(hunter_pro_df)
+# # print(hunter_pro_df)
 # print("Hunter Pro tardó %s segundos." % (time.time() - start_time))
 
 print("Ejecutando Comsatel.")
@@ -42,9 +42,9 @@ start_time = time.time()
 hunter_df = scan_hunter("Ayer")
 print("Hunter tardó %s segundos." % (time.time() - start_time))
 
-dfs = [comsatel_df, hunter_df, geotab_df, goldcar_df]
-#dfs =[goldcar_df]
-#dfs = [comsatel_df, hunter_df, geotab_df, goldcar_df]
+dfs = [comsatel_df, hunter_df, goldcar_df, geotab_df]
+# dfs = [comsatel_df, hunter_df]
+# dfs = [comsatel_df, hunter_df, geotab_df, goldcar_df]
 main_df = pd.concat(dfs)
 
 nombre_archivo = hora_reporte[0] + "_productividad.csv"

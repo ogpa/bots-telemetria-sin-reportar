@@ -2,6 +2,7 @@ import requests
 from datetime import datetime, timedelta
 from bs4 import BeautifulSoup
 import pandas as pd
+
 HUN_URL_BASE = "http://www.huntermonitoreoperu.com"
 HUN_URL_PANEL = "http://190.223.20.13/reportes/admin_report.php?perfil=4&idusuario=93084&idsubusuario=0&Version=3"
 HUN_URL_PRODUCTIVIDAD = "http://190.223.20.13/reportes/resumen_productividad.php"
@@ -18,8 +19,9 @@ def juntar_codigos_placas(lista_codigos_placas):
         string_lista_codigos = string_lista_codigos + c + "%2C"
     # Eliminar últimos 3 caracteres
     string_lista_codigos = string_lista_codigos[:-3]
-    print(string_lista_codigos)
+    # print(string_lista_codigos)
     return string_lista_codigos
+
 
 # payload yyyymmdd
 
@@ -41,9 +43,9 @@ def ayer():
 def extraer_texto(textomaster, ini_cabecera, fin_cabecera):
     ini = textomaster.find(ini_cabecera)
     # empieza a buscar el fin a partir del inicio
-    fin = textomaster.find(fin_cabecera, ini+len(ini_cabecera))
+    fin = textomaster.find(fin_cabecera, ini + len(ini_cabecera))
     # https://www.freecodecamp.org/news/how-to-substring-a-string-in-python/
-    texto = textomaster[ini+len(ini_cabecera):fin]
+    texto = textomaster[ini + len(ini_cabecera) : fin]
     return texto
 
 
@@ -61,7 +63,7 @@ def convertir_hhmmss(hhmmss):
         s = hhmmss[-2:]
         # print(s)
         s = int(s)
-        hora = h + m/60 + s/3600
+        hora = h + m / 60 + s / 3600
     return hora
 
 
@@ -69,29 +71,26 @@ def convertir_placa(alias):
     c = "-"
     pos_guion = alias.find(c)
     if pos_guion != -1:
-        placa = alias[pos_guion-3:pos_guion+4]
+        placa = alias[pos_guion - 3 : pos_guion + 4]
     else:
         placa = alias
     return placa
 
 
 def calcular_porcentaje_ralenti(duracion, duracion_ralenti):
-
-    if (duracion_ralenti == 0):
+    if duracion_ralenti == 0:
         porcentaje_ralenti = 0
     else:
-        porcentaje_ralenti = (
-            duracion_ralenti/(duracion+duracion_ralenti))
+        porcentaje_ralenti = duracion_ralenti / (duracion + duracion_ralenti)
     return porcentaje_ralenti
 
 
 def limpiar_descripcion_vehiculo(descripcion_vehiculo):
-    sin_comas = descripcion_vehiculo.replace(',', '')
+    sin_comas = descripcion_vehiculo.replace(",", "")
     return sin_comas
 
 
 def crear_csv_productividad(respuesta, fecha):
-
     lista_placa = []
     lista_descripcion_vehiculo = []
     lista_fecha = []
@@ -105,8 +104,7 @@ def crear_csv_productividad(respuesta, fecha):
     lista_porcentaje_ralenti = []
 
     doc = BeautifulSoup(respuesta, "html.parser")
-    for t in doc.find_all(
-            "table", {"id": "report"}):
+    for t in doc.find_all("table", {"id": "report"}):
         for tr in t.find_all("tr", {"class": "rows"}):
             td = tr.find_all("td")
             # print(td)
@@ -123,117 +121,134 @@ def crear_csv_productividad(respuesta, fecha):
             lista_velocidad_maxima.append(td[5].text)
             duracion_ralenti = convertir_hhmmss(td[12].text)
             lista_duracion_ralenti.append(duracion_ralenti)
-            porcentaje_ralenti = calcular_porcentaje_ralenti(
-                duracion, duracion_ralenti)
+            porcentaje_ralenti = calcular_porcentaje_ralenti(duracion, duracion_ralenti)
             lista_porcentaje_ralenti.append(porcentaje_ralenti)
 
     # print(temp)
 
-    dict_productividad = {"placa": lista_placa,
-                          "descripcion_vehiculo": lista_descripcion_vehiculo,
-                          "fecha": fecha,
-                          "tipo_reporte": lista_tipo_reporte,
-                          "dias_uso": lista_dias_usados,
-                          "horas_movimiento": lista_duracion,
-                          "distancia": lista_distancia,
-                          "velocidad_maxima": lista_velocidad_maxima,
-                          "horas_ralenti": lista_duracion_ralenti,
-                          "porcentaje_ralenti": lista_porcentaje_ralenti,
-                          "proveedor": "Hunter"}
+    dict_productividad = {
+        "placa": lista_placa,
+        "descripcion_vehiculo": lista_descripcion_vehiculo,
+        "fecha": fecha,
+        "tipo_reporte": lista_tipo_reporte,
+        "dias_uso": lista_dias_usados,
+        "horas_movimiento": lista_duracion,
+        "distancia": lista_distancia,
+        "velocidad_maxima": lista_velocidad_maxima,
+        "horas_ralenti": lista_duracion_ralenti,
+        "porcentaje_ralenti": lista_porcentaje_ralenti,
+        "proveedor": "Hunter",
+    }
     productividad_df = pd.DataFrame(dict_productividad)
-    #productividad_df_filename = "hunter_productividad.csv"
-    #productividad_df.to_csv(productividad_df_filename, index=False)
+    # productividad_df_filename = "hunter_productividad.csv"
+    # productividad_df.to_csv(productividad_df_filename, index=False)
     return productividad_df
 
 
 def obtener_reporte_productividad(c, hora_reporte):
-
     payload_Panel = {}
     headers_Panel = {
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-        'Accept-Language': 'en-US,en;q=0.9',
-        'Connection': 'keep-alive',
-        'Referer': HUN_URL_BASE,
-        'Upgrade-Insecure-Requests': '1',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36'
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+        "Accept-Language": "en-US,en;q=0.9",
+        "Connection": "keep-alive",
+        "Referer": HUN_URL_BASE,
+        "Upgrade-Insecure-Requests": "1",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36",
     }
-    #response_Panel = requests.request(
+    # response_Panel = requests.request(
     #    "GET", HUN_URL_PANEL, headers=headers_Panel, data=payload_Panel)
     print("response_Panel")
-    payload_Categoriaperfil = "tipoTree=entidad&idusuario=93084&idsubusuario=0&idperfil=4"
+    payload_Categoriaperfil = (
+        "tipoTree=entidad&idusuario=93084&idsubusuario=0&idperfil=4"
+    )
     headers_Categoriaperfil = {
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-        'Accept-Language': 'en-US,en;q=0.9',
-        'Cache-Control': 'max-age=0',
-        'Connection': 'keep-alive',
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Origin': 'http://190.223.20.13',
-        'Referer': HUN_URL_PANEL,
-        'Upgrade-Insecure-Requests': '1',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36'
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+        "Accept-Language": "en-US,en;q=0.9",
+        "Cache-Control": "max-age=0",
+        "Connection": "keep-alive",
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Origin": "http://190.223.20.13",
+        "Referer": HUN_URL_PANEL,
+        "Upgrade-Insecure-Requests": "1",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36",
     }
 
-    #response_Categoriaperfil = requests.request(
+    # response_Categoriaperfil = requests.request(
     #    "POST", HUN_URL_PRODUCTIVIDAD, headers=headers_Categoriaperfil, data=payload_Categoriaperfil)
     print("response_Categoriaperfil")
     payload_Ajaxcontroller = "opcion=listarConductor&idUsuario=93084"
     headers_Ajaxcontroller = {
-        'Accept': '*/*',
-        'Accept-Language': 'en-US,en;q=0.9',
-        'Connection': 'keep-alive',
-        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-        'Origin': 'http://190.223.20.13',
-        'Referer': HUN_URL_PANEL,
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',
-        'X-Requested-With': 'XMLHttpRequest'
+        "Accept": "*/*",
+        "Accept-Language": "en-US,en;q=0.9",
+        "Connection": "keep-alive",
+        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+        "Origin": "http://190.223.20.13",
+        "Referer": HUN_URL_PANEL,
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36",
+        "X-Requested-With": "XMLHttpRequest",
     }
 
-    #response_Ajaxcontroller = requests.request(
+    # response_Ajaxcontroller = requests.request(
     #    "POST", HUN_URL_AJAXCONTROLLER, headers=headers_Ajaxcontroller, data=payload_Ajaxcontroller)
     print("response_Ajaxcontroller")
-    payload_Saveranking = "idu=93084&idri=IRA&idrt=RESUMEN+DE+PRODUCTIVIDAD+DE+MANEJO&idsi=NULL&idst=NULL"
+    payload_Saveranking = (
+        "idu=93084&idri=IRA&idrt=RESUMEN+DE+PRODUCTIVIDAD+DE+MANEJO&idsi=NULL&idst=NULL"
+    )
     headers_Saveranking = {
-        'Accept': '*/*',
-        'Accept-Language': 'en-US,en;q=0.9',
-        'Connection': 'keep-alive',
-        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-        'Origin': 'http://190.223.20.13',
-        'Referer': HUN_URL_PANEL,
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',
-        'X-Requested-With': 'XMLHttpRequest'
+        "Accept": "*/*",
+        "Accept-Language": "en-US,en;q=0.9",
+        "Connection": "keep-alive",
+        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+        "Origin": "http://190.223.20.13",
+        "Referer": HUN_URL_PANEL,
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36",
+        "X-Requested-With": "XMLHttpRequest",
     }
-    #response_Saveranking = requests.request(
+    # response_Saveranking = requests.request(
     #    "POST", HUN_URL_SAVERANKING, headers=headers_Saveranking, data=payload_Saveranking)
     print("response_Saveranking")
     # Reporte: Resumen de Productividad de Manejo
 
     # 0: payload yyyymmdd
     # 1: dataframe dd/mm/yyyy
-    #fecha_payload = fecha(hora_reporte)
+    # fecha_payload = fecha(hora_reporte)
     if hora_reporte == "Ayer":
         fecha_payload = fecha(1)  # dd/mm/yyyy
     elif hora_reporte == "Hoy":
         fecha_payload = fecha(0)  # dd/mm/yyyy
     string_codigos_placas_payload = juntar_codigos_placas(c)
     string_codigos_placas_payload = "866381056226381%2C866381056224055%2C866381056208322%2C866381056305276%2C866381056266437%2C866381056273847%2C866381056199778%2C866381056194878%2C860896050068055%2C860896050290402%2C866381056247833%2C860896050290519%2C4634600632%2C860896050607415%2C868574041164018%2C867553058042573%2C860896050003144%2C860896050131739%2C860896050044650%2C860896050044478%2C860896050146984%2C860896050273564%2C860896050003227%2C860896050121706%2C860896050133594%2C860896050003706%2C860896050082338%2C864606045286266%2C4764398075%2C860896050129386%2C860896050162940%2C860896050263748%2C4764393115%2C860896050151976%2C860896050069210%2C860896050256288%2C860896050261197%2C866381056250936%2C860896050168871%2C860896050151992%2C860896050168772%2C866381056290288%2C860896050007152%2C860896050012863%2C864352043792829%2C866381051424031%2C860896050162122%2C864352043600998%2C860896050128636%2C864352043620244%2C860896050098235%2C860896050105923%2C860896050278357%2C868574041097705%2C4764397977%2C868574040829553%2C868574041095865%2C868574041092094%2C868574041077038%2C868574041062550%2C868574040965449%2C868574041064416%2C868574041098554%2C868574041069787%2C4764425524"
-    payload_Reporteproductividad = 'u=93084&v='+string_codigos_placas_payload + \
-        '&i=' + fecha_payload[0] + '&f=' + fecha_payload[0] + '&vv=&cl='+CLAVE + \
-        '&ts=RNT&e='+USUARIO+'**EG*01&version=undefined'
+    payload_Reporteproductividad = (
+        "u=93084&v="
+        + string_codigos_placas_payload
+        + "&i="
+        + fecha_payload[0]
+        + "&f="
+        + fecha_payload[0]
+        + "&vv=&cl="
+        + CLAVE
+        + "&ts=RNT&e="
+        + USUARIO
+        + "**EG*01&version=undefined"
+    )
     headers_Reporteproductividad = {
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-        'Accept-Language': 'en-US,en;q=0.9',
-        'Cache-Control': 'max-age=0',
-        'Connection': 'keep-alive',
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Origin': 'http://190.223.20.13',
-        'Referer': HUN_URL_PANEL,
-        'Upgrade-Insecure-Requests': '1',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36'
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+        "Accept-Language": "en-US,en;q=0.9",
+        "Cache-Control": "max-age=0",
+        "Connection": "keep-alive",
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Origin": "http://190.223.20.13",
+        "Referer": HUN_URL_PANEL,
+        "Upgrade-Insecure-Requests": "1",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36",
     }
 
     response_Reporteproductividad = requests.request(
-        "POST", HUN_URL_PRODUCTIVIDAD, headers=headers_Reporteproductividad, data=payload_Reporteproductividad)
+        "POST",
+        HUN_URL_PRODUCTIVIDAD,
+        headers=headers_Reporteproductividad,
+        data=payload_Reporteproductividad,
+    )
     print("response_Reporteproductividad")
-    df = crear_csv_productividad(
-        response_Reporteproductividad.text, fecha_payload[1])
+    df = crear_csv_productividad(response_Reporteproductividad.text, fecha_payload[1])
     return df

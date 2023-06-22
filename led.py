@@ -1,0 +1,13 @@
+import requests
+
+url = "https://1s63u0qnc9.execute-api.us-east-1.amazonaws.com/test/helloworld"
+
+payload = {}
+headers = {}
+
+response = requests.request("GET", url, headers=headers, data=payload)
+
+print(response.text)
+
+{'resource': '/helloworld', 'path': '/helloworld', 'httpMethod': 'POST', 'headers': {'Accept': '*/*', 'Content-Type': 'application/x-www-form-urlencoded', 'Host': '1s63u0qnc9.execute-api.us-east-1.amazonaws.com', 'I-Twilio-Idempotency-Token': '83751805-078c-4963-8545-69c5f115220d', 'User-Agent': 'TwilioProxy/1.1', 'X-Amzn-Trace-Id': 'Root=1-64055d98-4d5d79fe7e8c9847322e4945', 'X-Forwarded-For': '3.85.76.35', 'X-Forwarded-Port': '443', 'X-Forwarded-Proto': 'https', 'X-Home-Region': 'us1', 'X-Twilio-Signature': 'gAHq7WsGWVdy+PAAgoihYU5LLCs='}, 'multiValueHeaders': {'Accept': ['*/*'], 'Content-Type': ['application/x-www-form-urlencoded'], 'Host': ['1s63u0qnc9.execute-api.us-east-1.amazonaws.com'], 'I-Twilio-Idempotency-Token': ['83751805-078c-4963-8545-69c5f115220d'], 'User-Agent': ['TwilioProxy/1.1'], 'X-Amzn-Trace-Id': ['Root=1-64055d98-4d5d79fe7e8c9847322e4945'], 'X-Forwarded-For': ['3.85.76.35'], 'X-Forwarded-Port': ['443'], 'X-Forwarded-Proto': ['https'], 'X-Home-Region': ['us1'], 'X-Twilio-Signature': ['gAHq7WsGWVdy+PAAgoihYU5LLCs=']}, 'queryStringParameters': None, 'multiValueQueryStringParameters': None, 'pathParameters': None, 'stageVariables': None, 'requestContext': {
+    'resourceId': 'nj1dgj', 'resourcePath': '/helloworld', 'httpMethod': 'POST', 'extendedRequestId': 'BVuP3HaOoAMFdqA=', 'requestTime': '06/Mar/2023:03:27:20 +0000', 'path': '/test/helloworld', 'accountId': '080921005269', 'protocol': 'HTTP/1.1', 'stage': 'test', 'domainPrefix': '1s63u0qnc9', 'requestTimeEpoch': 1678073240497, 'requestId': '5806cfff-fdad-4af4-bca2-5378d7c8929b', 'identity': {'cognitoIdentityPoolId': None, 'accountId': None, 'cognitoIdentityId': None, 'caller': None, 'sourceIp': '3.85.76.35', 'principalOrgId': None, 'accessKey': None, 'cognitoAuthenticationType': None, 'cognitoAuthenticationProvider': None, 'userArn': None, 'userAgent': 'TwilioProxy/1.1', 'user': None}, 'domainName': '1s63u0qnc9.execute-api.us-east-1.amazonaws.com', 'apiId': '1s63u0qnc9'}, 'body': 'SmsMessageSid=SM7025df4fb216284f48f021f6f7fe9a60&NumMedia=0&ProfileName=Caf%C3%A9+con+leche&SmsSid=SM7025df4fb216284f48f021f6f7fe9a60&WaId=51949417273&SmsStatus=received&Body=Test2227050323&To=whatsapp%3A%2B14155238886&NumSegments=1&ReferralNumMedia=0&MessageSid=SM7025df4fb216284f48f021f6f7fe9a60&AccountSid=ACa4818d82a4d67a174df747a33beec1c3&From=whatsapp%3A%2B51949417273&ApiVersion=2010-04-01', 'isBase64Encoded': False}
